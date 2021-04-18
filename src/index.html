@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AChart Creator</title>
+  <meta charset="UTF-8"/>
+  <style type="text/css">
+    * {
+      margin-left: 2rem;
+      margin-right: 2rem;
+      margin-top: 2rem;
+      font-family: Arial;
+    }
+    h1::after {
+      display: block;
+      content: '';
+
+    }
+
+    h1 {
+      border-bottom: 0.1rem solid black;
+    }
+
+    ul {
+      margin: 0;
+      margin-top: -0.5rem;
+    }
+
+    ul.dash_list {
+      list-style-type: none;
+    }
+
+    ul.dash_list > li {
+      text-indent: -1rem;
+      margin-top: 0.25rem;
+    }
+    ul.dash_list > li:before {
+      content: "- ";
+      text-indent: 1rem;
+    }
+
+    #functinality {
+      margin-right: 50rem;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      grid-row-gap: 2rem;
+      grid-template-areas: "grid-item-1 grid-item-2" "grid-item-3 grid-item-3";
+    }
+
+
+    .grid-item-1 {
+      grid-area: grid-item-1;
+    }
+    
+    .grid-item-2 {
+      grid-area: grid-item-2;
+    }
+    
+    .grid-item-3 { 
+      grid-area: grid-item-3; 
+      text-align: center;
+    } 
+
+  </style>
+</head>
+<body>
+  <h1>AChart Creator GUI</h1>
+  <section id="description">
+    <div class = "text">
+      <p>AChart Creator is a tool to create accessible SVG charts from tabular data containd in CSV files.</p>
+
+      <p>This tool has the following features:
+        <ul class = "dash_list">
+          <li>Reads a CSV file and creates an Accessible SVG Chart.</li>
+          <li>Written in TypeScript.</li>
+          <li>Aria-compatible.</li>
+        </ul>
+      </p>
+    </div>
+  </section>
+
+  <section id="functionality">
+    <div class = "grid-container">
+      <div class = "grid-item-1">
+        Choose a sample CSV file.
+        <select id = "achar_creator_sample_file" width="5rem">
+          <option value="">no CSV file chosen</option>
+        </select>
+      </div>
+      <div class = "grid-item-2">
+        Upload your CSV file.
+        <input type = "file" accept = ".csv" id = "achart_creator_user_upload"/>
+      </div>
+      <div class = "grid-item-3">
+        Download your SVG file.
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>
