@@ -197,7 +197,7 @@ export class BarChart extends Chart
     // Add values to bars
     let labels = undefined;
     bandwidth = this.round(bandwidth / 2);
-    if (metadata.segment_values)
+    if (metadata.bar_values)
     {
       labels = datapoints.append("text")
           .attr("x", bandwidth)
@@ -226,7 +226,7 @@ export class BarChart extends Chart
         });
     
     
-    return d3.select(doc).select("body").html();
+    return doc.documentElement.outerHTML;
   }
   
 }

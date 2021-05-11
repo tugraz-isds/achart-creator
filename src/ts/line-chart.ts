@@ -312,7 +312,7 @@ export class LineChart extends Chart
     }
     
     
-    return d3.select(doc).select("body").html();
+    return doc.documentElement.outerHTML;
   }
   
 }

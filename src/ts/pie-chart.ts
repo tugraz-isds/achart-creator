@@ -116,7 +116,7 @@ export class PieChart extends Chart
                   return this.color(d.data[this.names_columns[0]]);
                 })
                 .attr("stroke", "black")
-                .style("opacity", 0.7);
+                .attr("style", "opacity: 0.7;");
     
     this.roundAttributeValue(datapoints.selectAll("path"), "d");
     
@@ -143,7 +143,7 @@ export class PieChart extends Chart
             return "translate(" + label_positions[i] + ")";
           })
           .attr("dy", "15")
-          .style("text-anchor", "middle");
+          .attr("style", "text-anchor: middle;");
     }
     else if ( (metadata.tooltips) && (metadata.segment_percentages) )
     {
@@ -183,7 +183,7 @@ export class PieChart extends Chart
             return "translate(" + label_positions[i] + ")";
           })
           .attr("dy", "30")
-          .style("text-anchor", "middle");
+          .attr("style", "text-anchor: middle;");
     }
     
     else if (metadata.tooltips)
@@ -242,7 +242,7 @@ export class PieChart extends Chart
               {
                 return "translate(" + label_positions[ this.color_occurances[i] ] + ")";
               })
-              .style("text-anchor", "middle")
+              .attr("style", "text-anchor: middle;")
               .append("text")
                   .text( (d: any) =>
                   {
@@ -252,7 +252,7 @@ export class PieChart extends Chart
     }
     
     
-    return d3.select(doc).select("body").html();
+    return doc.documentElement.outerHTML;
   }
   
   

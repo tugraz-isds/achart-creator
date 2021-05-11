@@ -2,6 +2,7 @@
 build/
 src/ts/build/
 binaries/
+*.svg
 
 # editors
 .idea/

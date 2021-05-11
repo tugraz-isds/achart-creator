@@ -7,9 +7,11 @@ import { PieChart } from "./pie-chart";
 
 
 const { JSDOM } = require("jsdom");
-const dom = new JSDOM(`<!DOCTYPE html>
-    <meta charset="utf-8">
-    <html><body></body></html>`);
+
+const dom = new JSDOM( "<svg></svg>",
+{
+  contentType: "text/xml"
+});
 export const doc = dom.window.document;
 
 
@@ -50,8 +52,9 @@ export class AChartCreator
     column: 0,
     datapoints_sorting: true,
     legend: true,
-    segment_values: true,
     tooltips: true,
+    bar_values: true,
+    segment_values: true,
     segment_percentages: true,
     label_round_factor: 10,
     target: Target.ACHART
@@ -203,6 +206,10 @@ export class AChartCreator
           
         case "--no-legend":
           this.chart_metadata.legend = false;
+          break;
+          
+        case "--no-bar-values":
+          this.chart_metadata.bar_values = false;
           break;
           
         case "--no-segment-values":

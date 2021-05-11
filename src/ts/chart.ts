@@ -204,8 +204,7 @@ export abstract class Chart
     // Initialise the SVG document
     
     // Root <svg> element:
-    this.svg = d3.select(doc).select("body")
-        .append("svg");
+    this.svg = d3.select(doc).select("svg");
     
     this.svg.attr("viewBox", "0 0 " + this.svg_width + " " + this.SVG_HEIGHT)
         .attr("version", "1.1")
@@ -329,11 +328,11 @@ export abstract class Chart
     {
       legend_items.append("line")
           .attr("x2", "20")
-            .style("stroke-width", "3")
-            .attr("stroke", (d : any) =>
-            {
-              return color(d);
-            });
+          .attr("style", "stroke-width: 3;")
+          .attr("stroke", (d : any) =>
+          {
+            return color(d);
+          });
     }
     
     legend_items.append("text")

@@ -55,134 +55,202 @@ npx gulp build
 To create a chart, the following syntax is used:
 
 ```
-node build/acreate.js [--chart] CHART-TYPE] [--dataset CSV-FILENAME] [--output SVG-FILENAME] [--chart-title TITLE] [--chart-desc DESCRIPTION] [--x-axis-title TITLE] [--y-axis-title TITLE] [--legend-title TITLE] [--target SOFTWARE] [--column DATA-COLUMN] [--no-sort] [--no-legend] [--no-segment-values] [--no-segment-percentages] [--no-tooltips] [--segment-percentage-precision PLACES] [--svg-precision PLACES] [--version] [--help]
+node build/acreate.js [--chart] CHART-TYPE [--dataset CSV-FILENAME] [--output SVG-FILENAME] [--chart-title TITLE] [--chart-desc DESCRIPTION] [--x-axis-title TITLE] [--y-axis-title TITLE] [--legend-title TITLE] [--target SOFTWARE] [--column DATA-COLUMN] [--no-sort] [--no-legend] [--no-tooltips] [--no-bar-values] [--no-segment-values] [--no-segment-percentages] [--segment-percentage-precision PLACES] [--svg-precision PLACES] [--version] [--help]
 ```
 
 
 Mandatory arguments:
 
-    CHART-TYPE                             Specifies the type of the chart to be created.
-                                           Currently supported chart types are bar,
-                                           line, and pie (case-insensitive).
-                                           The parameter must be specified either
-                                           as the first command-line argument or,
-                                           alternatively, prepended by --chart.
+     CHART-TYPE                             Specifies the type of the chart
+                                            to be created. Currently
+                                            supported chart types are bar,
+                                            line, and pie (case-insensitive).
+                                            This argument can be given either
+                                            as the first command-line
+                                            parameter or, alternatively, at
+                                            any position, prepended by --chart.
 
 
 Optional arguments:
 
-    --dataset CSV-FILENAME                 Specifies the CSV file containing the data
-                                           to be visualised in the chart.
-                                           If not specified, a default CSV file will
-                                           be chosen.
+     --dataset CSV-FILENAME                 Specifies the CSV file
+                                            containing the data to be
+                                            visualised in the chart. If not
+                                            specified, a default CSV file will
+                                            be chosen.
 
-    --output SVG-FILENAME                  Specifies the name of the resulting SVG file.
-                                           If not specified, the output file will
-                                           be named according to the input filename
-                                           with the extension .svg and placed into its directory.
+     --output SVG-FILENAME                  Specifies the name of the
+                                            resulting SVG file. If not
+                                            specified, the output file will
+                                            be named according to the input
+                                            filename with the extension
+                                            .svg and placed into its directory.
 
-    --chart-title TITLE                    Specifies a title for the chart which is visible
-                                           and accessible by screen readers.
-                                           If not specified, the title will be
-                                           derived from the headers of the CSV columns.
+     --chart-title TITLE                    Specifies a title for the chart
+                                            which is visible and accessible
+                                            by screen readers. If not
+                                            specified, the title will be
+                                            derived from the headers of the
+                                            CSV columns.
 
-    --chart-desc DESCRIPTION               Assigns the chart a more detailed
-                                           overall description in addition to the title.
-                                           The description is not visible, but can be
-                                           obtained by screen readers.
+     --chart-desc DESCRIPTION               Assigns the chart a more detailed
+                                            overall description in addition
+                                            to the title. The description
+                                            is not visible but can be
+                                            obtained by screen readers.
 
-    --x-axis-title TITLE                   Specifies a title for the x-axis (if applicable).
-                                           The title is visible and accessible by screen
-                                           readers. If not specified, it will be derived
-                                           from the header of the first CSV column.
-                                           Alias: --x-title TITLE
+     --x-axis-title TITLE                   Specifies a title for the x-axis
+                                            (if applicable). The title is
+                                            visible and accessible by screen
+                                            readers. If not specified, it
+                                            will be derived from the header
+                                            of the first CSV column. For pie
+                                            charts, the option has no effect.
+                                            Alias: --x-title TITLE
 
-    --y-axis-title TITLE                   Specifies a title for the y-axis (if applicable).
-                                           The title is visible and accessible by screen
-                                           readers. If not specified, in the case of a
-                                           single-series bar or line chart, it will be
-                                           derived from the header of the data column.
-                                           Alias: --y-title TITLE
+     --y-axis-title TITLE                   Specifies a title for the y-axis
+                                            (if applicable). The title is
+                                            visible and accessible by screen
+                                            readers. If not specified, in
+                                            the case of a single-series bar
+                                            or line chart, it will be
+                                            derived from the header of the
+                                            data column. For pie charts,
+                                            the option has no effect.
+                                            Alias: --y-title TITLE
+     
+     --legend-title TITLE                   Specifies a title for the
+                                            legend (if applicable). The
+                                            title is visible and accessible
+                                            by screen readers. If not
+                                            specified, in the case of a pie
+                                            chart, it will be derived from
+                                            the header of the first CSV
+                                            column. For multi-line charts, the
+                                            legend title defaults to "Legend".
+                                            If no legend is printed, the
+                                            option has no effect.
 
-    --legend-title TITLE                   Specifies a title for the legend (if applicable).
-                                           The title is visible and accessible by screen
-                                           readers. If not specified, in the case of a
-                                           pie chart, it will be derived from the header
-                                           of the first CSV column. For multi-line charts,
-                                           the legend title defaults to "Legend".
+     --target SOFTWARE                      States which assistive software
+                                            the accessibility markup shall
+                                            be optimised for.
+                                            Valid arguments for SOFTWARE are
+                                            (case-insensitive):
+                                            achart         for AChart
+                                                           Interpreter (default).
+                                            describler     for Describler.
+                                            screen-reader  for common screen
+                                                           readers (JAWS,
+                                                           NVDA, etc.)
+                                                           interacting with
+                                                           browsers without
+                                                           any special chart
+                                                           reading software.
+                                            This is meant to optimise the
+                                            user experience for the respective
+                                            target; in general, all the
+                                            three targets should work with
+                                            all the named types of
+                                            assistive software.
 
-    --target SOFTWARE                      States which assistive software the
-                                           accessibility markup shall be optimised for.
-                                           Valid arguments for SOFTWARE are (case-insensitive):
-                                           achart         for AChart Interpreter (default).
-                                           describler     for Describler.
-                                           screen-reader  for common screen readers (JAWS,
-                                                          NVDA etc.) interacting with
-                                                          browsers without any special
-                                                          chart reading software.
-                                           This is meant to optimise the user experience
-                                           for the respective target. In general, all
-                                           three targets should work with all the named
-                                           types of assistive software.
+     --column DATA-COLUMN                   Specifies the CSV column
+                                            containing the data series to
+                                            be visualised. DATA-COLUMN is an
+                                            integer > 0, where the columns
+                                            are assumed to be counted with
+                                            increasing numbers from left to
+                                            right. If the option is not
+                                            given, in the case of a line
+                                            chart, all columns of the CSV
+                                            file, starting by number 1,
+                                            will be visualised, where one
+                                            line (data series) corresponds
+                                            to one column. For bar and pie
+                                            charts, DATA-COLUMN defaults to 1.
 
-    --column DATA-COLUMN                   Specifies the CSV column containing the data
-                                           series to be visualised. DATA-COLUMN is an
-                                           integer > 0, where the columns are assumed to
-                                           be counted with increasing numbers from left to
-                                           right. If the option is not given, in the case
-                                           of a line chart, all columns of the CSV file,
-                                           starting by number 1, will be visualised, where
-                                           one line (data series) corresponds to one
-                                           column. For bar and pie charts, DATA-COLUMN
-                                           defaults to 1.
+     --no-sort                              By default, all data points are
+                                            sorted in increasing order by
+                                            name, i.e. the content of the
+                                            corresponding cells of the first
+                                            CSV column. If this option is
+                                            given, the data points will
+                                            instead be visualised in the
+                                            order their corresponding lines
+                                            are listed in the CSV file from
+                                            top to bottom.
 
-    --no-sort                              By default, all data points are sorted in
-                                           increasing order by name, i.e. the
-                                           content of the corresponding cells of the
-                                           first CSV column. If this option is given,
-                                           the data points will instead be visualised in
-                                           the order their corresponding lines are listed
-                                           in the CSV file from top to bottom.
-
-    --no-legend                            Suppresses the creation of a legend.
-                                           In the case of a multi-line chart, each line
-                                           will instead be given a title element with
-                                           the corresponding data series title, which is
-                                           accessible by screen readers and visible as a
-                                           tooltip on mouse-over. For pie charts, labels
-                                           are instead displayed within their
-                                           corresponding pie slices.
-
-    --no-segment-values                    Suppresses the labelling of pie segments in
-                                           pie charts or bars in bar charts with
-                                           data point values.
-    
-    --no-segment-percentages               Suppresses the labelling of pie chart segments
-                                           with data point percentages.
-
-     --no-tooltips                          Suppresses all tooltips (<title>
-                                            elements). This may slightly
-                                            impair the optimisation for
-                                            Describler, even if the option
+     --no-tooltips                          Suppresses all tooltips on
+                                            mouse-over (<title> elements).
+                                            This may slightly impair the
+                                            optimisation for Describler,
+                                            even if the option
                                             --target describler is used.
 
-    --segment-percentage-precision PLACES  Specifies the number of decimal places for rounding
-                                           percentages in labels of pie chart segments.
-                                           PLACES must be an integer ≥ 0. The default is 1.
+     --no-legend                            Suppresses the creation of a
+                                            legend. Unless --no-tooltips
+                                            is given as well, in the case
+                                            of a multi-line chart, each line
+                                            will instead be given a <title>
+                                            element with the corresponding
+                                            data series title, which is
+                                            accessible by screen readers
+                                            and visible as a tooltip on
+                                            mouse-over. For pie charts,
+                                            labels are instead displayed
+                                            within their corresponding pie
+                                            segments.
 
-    --svg-precision PLACES                 Specifies the number of decimal places for rounding
-                                           SVG coordinates and lengths.
-                                           PLACES must be an integer ≥ 0. The default is 3.
+     --no-bar-values                        Suppresses the visual labelling
+                                            of bars in bar charts with data
+                                            point values. The bar values
+                                            are then available as tooltips,
+                                            unless --no-tooltips is given
+                                            as well. For other chart types,
+                                            the option has no effect.
 
-    --version                              Prints version information and exits.
+     --no-segment-values                    Suppresses the visual labelling
+                                            of pie segments in pie charts
+                                            with data point values.
+                                            The segment values are then
+                                            available as tooltips, unless
+                                            --no-tooltips is given as well.
+                                            For other chart types, the
+                                            option has no effect.
 
-    --help                                 Prints this help message and exits.
+     --no-segment-percentages               Suppresses the visual labelling
+                                            of pie chart segments with data
+                                            point percentages. The
+                                            percentages are then available
+                                            as tooltips, unless
+                                            --no-tooltips is given as well.
+                                            For other chart types, the
+                                            option has no effect.
+
+     --segment-percentage-precision PLACES  Specifies the number of decimal
+                                            places for rounding percentages
+                                            in labels or tooltips of pie
+                                            chart segments. PLACES must
+                                            be an integer ≥ 0. The default
+                                            is 1. For other chart types,
+                                            the option has no effect.
+
+     --svg-precision PLACES                 Specifies the number of decimal
+                                            places for rounding SVG
+                                            coordinates and lengths.
+                                            PLACES must be an integer ≥ 0.
+                                            The default is 3.
+
+     --version                              Prints version information
+                                            and exits.
+
+     --help                                 Prints this help message
+                                            and exits.
 
 
 All parameters and options are case-insensitive. If an argument
-contains spaces, enclose it in double quotation marks (""). Filenames
-may contain relative or absolute paths. If no path is given, the
-current working directory is assumed. Sample CSV data files can be
+contains spaces, enclose it in double quotation marks (""). Filenames 
+may contain relative or absolute paths. If no path is given,
+the current working directory is assumed. Sample CSV data files can be
 found in the `data/` directory.
 
 Note that, in order to use AChart Creator, you first need to run:
