@@ -3,6 +3,7 @@ build/
 src/ts/build/
 binaries/
 *.svg
+*.bat
 
 # editors
 .idea/

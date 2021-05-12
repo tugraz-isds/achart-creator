@@ -167,7 +167,6 @@ export class PieChart extends Chart
     
     if (metadata.segment_percentages)
     {
-      sum /= 100;
       datapoints.append("text")
           .attr("id", (d : any, i : number) =>
           {

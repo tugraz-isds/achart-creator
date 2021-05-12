@@ -206,10 +206,10 @@ export abstract class Chart
     // Root <svg> element:
     this.svg = d3.select(doc).select("svg");
     
-    this.svg.attr("viewBox", "0 0 " + this.svg_width + " " + this.SVG_HEIGHT)
-        .attr("version", "1.1")
-        .attr("xmlns", "http://www.w3.org/2000/svg")
+    this.svg.attr("xmlns", "http://www.w3.org/2000/svg")
         .attr("xmlns:xlink", "http://www.w3.org/1999/xlink")
+        .attr("version", "1.1")
+        .attr("viewBox", "0 0 " + this.svg_width + " " + this.SVG_HEIGHT)
         .attr("role", "graphics-document");
     
     // Chart title as overall <title> element for Describler:
