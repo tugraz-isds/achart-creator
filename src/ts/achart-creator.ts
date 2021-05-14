@@ -67,8 +67,8 @@ export class AChartCreator
   {
     
     // Make sure all output is encoded in UTF-8:
-    process.stdout.setEncoding("utf8");
-    process.stderr.setEncoding("utf8");
+    //process.stdout.setEncoding("utf8");
+    //process.stderr.setEncoding("utf8");
     
     console.info(`${Text.ACHART_CREATOR_TITLE} ${Text.VERSION} ${this.VERSION} \n`);
     
