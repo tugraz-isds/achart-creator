@@ -2,14 +2,18 @@
 Contributors
 ============
 
-Contributors to AChart Creator, roughly in chronological order.
+The following people have contributed to AChart Creator:
 
+- Keith Andrews
+  [kandrews@iicm.edu](mailto:kandrews@iicm.edu?subject=Rslidy)  
+  Project Leader
 
-* Christopher A. Kopel and Inti Gabriel Mendoza Estrada.
+* Christopher A. Kopel  
+  Master's Thesis, main developer
 
+* Inti Gabriel Mendoza Estrada  
 
-* Alexander Grass, Lea Novak, and Danica Radulovic.
-
-  From InfoVis SS 2019.
+* Alexander Grass, Lea Novak, and Danica Radulovic  
+  InfoVis SS 2019 G2
 
 
