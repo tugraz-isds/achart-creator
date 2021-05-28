@@ -11,6 +11,7 @@ export class Text
   static readonly CHART_TYPE =
   {
     bar: `Bar Chart`,
+    bargroup: `Grouped Bar Chart`,
     line: `Line Chart`,
     pie: `Pie Chart`,
     scatter: `Scatter Plot`,

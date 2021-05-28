@@ -2,39 +2,32 @@ import { Chart } from "./chart";
 import { Text } from "./text.en";
 import { Target } from "./achart-creator";
 
-
 const d3 = require("d3");
 
-
-
-export class BarChart extends Chart
+export class BarChartGroup extends Chart
 {
-  
-  
   readonly CHART_WIDTH = 600
   readonly SVG_HEIGHT = this.CHART_Y + this.CHART_HEIGHT + 2 * this.AXIS_HEIGHT + this.MARGIN
   chart_x = this.MARGIN + this.AXIS_HEIGHT
   
-  
   readonly STYLE = ".bar {fill: steelblue; }";
-  
   
   create(data : object[], metadata : any, doc : Document) : string
   {
-    
     // As bar charts currently support a single data series only,
     // make sure only the first value column is considered:
     if (!metadata.column)
     {
-      metadata.column = 1;
+   //   metadata.column = 1;
     }
-    
+
     this.init(data, metadata, doc);
-    
-    
+
+    //console.log(data[2]);
+
     // Chart root
-    this.root.attr("aria-charttype", "bar")
-        .attr("aria-roledescription", Text.CHART_TYPE.bar);
+    this.root.attr("aria-charttype", "bar-group")
+        .attr("aria-roledescription", Text.CHART_TYPE.bargroup);
     
     let xScale = d3.scaleBand().range ([0, this.CHART_WIDTH]).padding(0.4),
     yScale = d3.scaleLinear().range ([this.CHART_HEIGHT, 0]);
@@ -55,7 +48,7 @@ export class BarChart extends Chart
     {
       return d[this.names_columns[0]];
     }));
-    yScale.domain([y_min, y_max]);
+    yScale.domain([0, 100]);
     
     // group for x-axis:
     let xAxisGroup = this.root.append("g");
@@ -93,7 +86,6 @@ export class BarChart extends Chart
     
     
     // group for y-axis
-    
     let yAxisGroup = this.root.append("g")
         .attr("id", "yScale")
         .attr("role", "yaxis")
@@ -135,6 +127,9 @@ export class BarChart extends Chart
     let bar = this.root.append("g")
         .attr("id", "dataarea")
         .attr("role", "dataset");
+
+    let dataareasubgroup = bar.append("g")
+        .attr("id", "dataareasubgroup");
     
     // If there's a data series title:
     if (metadata.series_titles[0])
@@ -147,7 +142,7 @@ export class BarChart extends Chart
         series_title_element = "title";
       }
       
-      bar.attr("aria-labelledby", "dataset-title")
+      dataareasubgroup.attr("aria-labelledby", "dataset-title")
           .append(series_title_element)
               .attr("role", "heading")
               .attr("id", "dataset-title")
@@ -157,18 +152,40 @@ export class BarChart extends Chart
   
     // add the bars to the chart
     
-    let datapoints = bar.selectAll(".bar")
+    /*let datapoints = bar.selectAll(".bar")
         .data(data)
         .enter()
         .append("g")
             .attr("tabindex", "0")
+            .attr("transform", (d: 0, i: number) => {
+              return "translate(" + this.round(xScale(d[this.names_columns[0]]))
+                  + "," + this.round(yScale(d[this.values_columns[i]])) + ")";
+            })
             .attr("transform", (d: any) =>
             {
               return "translate(" + this.round(xScale(d[this.names_columns[0]]))
                   + "," + this.round(yScale(d[this.values_columns[0]])) + ")";
             })
-            .attr("role", "datapoint");
-    
+            .attr("role", "datapoint");*/
+
+
+    //console.log(this.values_columns[0]);
+    //console.log(data[0]["Name"]);
+
+    let datapoints = bar.selectAll(".bar")
+        .data(data)
+        .enter()
+        .append("g")
+        .attr("tabindex", "0")
+        .attr("transform", (i: any) =>
+        {
+          console.log(i);
+          return "translate(" + this.round(xScale(i[this.names_columns[0]]))
+              + "," + this.round(yScale(i[this.values_columns[i]])) + ")";
+        })
+        .attr("role", "datapoint");
+
+
     if (metadata.target === Target.SCREEN_READER)
     {
       datapoints.attr("aria-labelledby", (d : any, i : number) =>
@@ -186,17 +203,37 @@ export class BarChart extends Chart
     }
     
     let bandwidth = this.round(xScale.bandwidth());
-    datapoints.append("rect")
+    /*datapoints.append("rect")
         .attr("class", "bar")
         .attr("width", bandwidth)
         .attr("height", (d: any) =>
         {
           return this.round(this.CHART_HEIGHT - yScale(d[this.values_columns[0]]));
+        });*/
+
+    datapoints.append("rect")
+        .attr("class", "bar")
+        .attr("width", bandwidth)
+        .attr("height", (i: number) =>
+        {
+          //console.log(i);
+          return this.round(this.CHART_HEIGHT - yScale(data[0][this.values_columns[i]]));
         });
+
+    /*let bandwidth1 = this.round(xScale.bandwidth());
+    datapoints1.append("rect")
+        .attr("class", "bar")
+        .attr("width", bandwidth1)
+        .attr("height", (d: any) =>
+        {
+          return this.round(this.CHART_HEIGHT - yScale(d[this.values_columns[1]]));
+        });*/
     
     // Add values to bars
     let labels = undefined;
     bandwidth = this.round(bandwidth / 2);
+    //bandwidth1 = this.round(bandwidth1 / 2);
+
     if (metadata.bar_values)
     {
       labels = datapoints.append("text")

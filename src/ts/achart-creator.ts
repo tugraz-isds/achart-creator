@@ -2,6 +2,7 @@ import { FileHelper } from "./file-helper";
 import { Text } from "./text.en";
 import { Chart } from "./chart";
 import { BarChart } from "./bar-chart";
+import { BarChartGroup } from "./bar-chart-group";
 import { LineChart } from "./line-chart";
 import { PieChart } from "./pie-chart";
 
@@ -246,11 +247,14 @@ export class AChartCreator
     
     switch (this.chart_type)
     {
-      
       case "bar":
         this.chart = new BarChart();
         break;
-        
+
+      case "bar-group":
+        this.chart = new BarChartGroup();
+        break;
+
       case "line":
         this.chart = new LineChart();
         break;
