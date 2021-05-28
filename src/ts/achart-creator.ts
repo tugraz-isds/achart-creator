@@ -2,7 +2,7 @@ import { FileHelper } from "./file-helper";
 import { Text } from "./text.en";
 import { Chart } from "./chart";
 import { BarChart } from "./bar-chart";
-import { BarChartGroup } from "./bar-chart-group";
+import { BarChartGrouped } from "./bar-chart-grouped";
 import { LineChart } from "./line-chart";
 import { PieChart } from "./pie-chart";
 
@@ -49,6 +49,7 @@ export class AChartCreator {
       series_titles: [],
       legend_title: "",
       column: 0,
+      columns: [],
       datapoints_sorting: true,
       legend: true,
       tooltips: true,
@@ -57,7 +58,6 @@ export class AChartCreator {
       segment_percentages: true,
       label_round_factor: 10,
       target: Target.ACHART,
-      group: [],
     }
 
   chart: Chart
@@ -211,7 +211,7 @@ export class AChartCreator {
         case "--version":
           process.exit(0);
 
-        case "--group":
+        case "--columns":
           /* TODO:
           in chart.ts
           Check if the given columns exist!
@@ -219,8 +219,8 @@ export class AChartCreator {
           if ((++index) >= process.argv.length) {
             this.syntaxError(Text.NO_GROUP);
           }
-          var group = process.argv[index];
-          this.chart_metadata.group = group.split(" ");
+          var columns = process.argv[index];
+          this.chart_metadata.columns = columns.split(" ");
           break;
 
         default:
@@ -240,8 +240,8 @@ export class AChartCreator {
         this.chart = new BarChart();
         break;
 
-      case "bar-group":
-        this.chart = new BarChartGroup();
+      case "bar-grouped":
+        this.chart = new BarChartGrouped();
         break;
 
       case "line":

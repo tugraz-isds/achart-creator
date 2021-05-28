@@ -95,9 +95,9 @@ export abstract class Chart
 
     // Check if the grouped bar plot want grouping
 
-    if (metadata.group.length > 0)
+    if (metadata.columns.length > 0)
     {
-      this.values_columns = metadata.group
+      this.values_columns = metadata.columns
     }
     
     
