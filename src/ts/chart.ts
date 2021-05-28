@@ -92,6 +92,13 @@ export abstract class Chart
     {
       this.values_columns = headers.slice(1);
     }
+
+    // Check if the grouped bar plot want grouping
+
+    if (metadata.group.length > 0)
+    {
+      this.values_columns = metadata.group
+    }
     
     
     // Infer titles, if not specified by user

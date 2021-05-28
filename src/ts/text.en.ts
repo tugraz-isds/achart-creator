@@ -70,8 +70,10 @@ export class Text
   static readonly COLUMN_REQUIREMENTS = `Column must be a number > 0`;
   
   static readonly NO_PRECISION = `No precision specified`;
-  
+
   static readonly PRECISION_REQUIREMENTS = `Precision must be a number >= 0`;
+
+  static readonly NO_GROUP = `No group/s specified`;
   
   static readonly CSV_HAS_ONLY = `The CSV file contains only `;
   

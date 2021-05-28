@@ -10,8 +10,12 @@ export class BarChartGroup extends Chart
   readonly SVG_HEIGHT = this.CHART_Y + this.CHART_HEIGHT + 2 * this.AXIS_HEIGHT + this.MARGIN
   chart_x = this.MARGIN + this.AXIS_HEIGHT
   
-  readonly STYLE = ".bar {fill: steelblue; }";
+  // Color scale:
+  color : any
   
+  // Mapping of legend item indices to first applicable data points:
+  color_occurances : number[]
+
   create(data : object[], metadata : any, doc : Document) : string
   {
     // As bar charts currently support a single data series only,
@@ -22,8 +26,6 @@ export class BarChartGroup extends Chart
     }
 
     this.init(data, metadata, doc);
-
-    //console.log(data[2]);
 
     // Chart root
     this.root.attr("aria-charttype", "bar-group")
@@ -48,6 +50,7 @@ export class BarChartGroup extends Chart
     {
       return d[this.names_columns[0]];
     }));
+    // TODO: Fix scaling
     yScale.domain([0, 100]);
     
     // group for x-axis:
@@ -123,13 +126,16 @@ export class BarChartGroup extends Chart
           return "y" + (i+1);
         });
     
+    // set the color scale
+    this.color = d3.scaleOrdinal()
+        .domain(this.values_columns)
+        .range(d3.schemeSet2);
     
+    this.color_occurances = new Array<number>(this.color.domain().length);
+
     let bar = this.root.append("g")
         .attr("id", "dataarea")
         .attr("role", "dataset");
-
-    let dataareasubgroup = bar.append("g")
-        .attr("id", "dataareasubgroup");
     
     // If there's a data series title:
     if (metadata.series_titles[0])
@@ -142,127 +148,158 @@ export class BarChartGroup extends Chart
         series_title_element = "title";
       }
       
-      dataareasubgroup.attr("aria-labelledby", "dataset-title")
+      bar.attr("aria-labelledby", "dataset-title")
           .append(series_title_element)
               .attr("role", "heading")
               .attr("id", "dataset-title")
               .text(metadata.series_titles[0]);
     }
     
-  
-    // add the bars to the chart
+
+    // start supgroups
     
-    /*let datapoints = bar.selectAll(".bar")
-        .data(data)
-        .enter()
-        .append("g")
-            .attr("tabindex", "0")
-            .attr("transform", (d: 0, i: number) => {
-              return "translate(" + this.round(xScale(d[this.names_columns[0]]))
-                  + "," + this.round(yScale(d[this.values_columns[i]])) + ")";
-            })
-            .attr("transform", (d: any) =>
-            {
-              return "translate(" + this.round(xScale(d[this.names_columns[0]]))
-                  + "," + this.round(yScale(d[this.values_columns[0]])) + ")";
-            })
-            .attr("role", "datapoint");*/
-
-
-    //console.log(this.values_columns[0]);
-    //console.log(data[0]["Name"]);
-
-    let datapoints = bar.selectAll(".bar")
-        .data(data)
-        .enter()
-        .append("g")
-        .attr("tabindex", "0")
-        .attr("transform", (i: any) =>
+    for (let current_data_row_index = 0; current_data_row_index < data.length; current_data_row_index++) {
+      let dataareasubgroup = bar.append("g")
+          // .attr("id", "dataareasubgroup-" + data[current_data_row_index][this.names_columns[0]])
+          .attr("id", "dataareasubgroup-" + current_data_row_index)
+          .attr("role", "datasetsubgroup");
+      
+        let series_title_element = "desc";
+        if (metadata.tooltips)
         {
-          console.log(i);
-          return "translate(" + this.round(xScale(i[this.names_columns[0]]))
-              + "," + this.round(yScale(i[this.values_columns[i]])) + ")";
-        })
-        .attr("role", "datapoint");
+          bar.attr("tabindex", "0");
+          series_title_element = "title";
+        }
+      dataareasubgroup.attr("aria-labelledby", "datasetsubgroup-title")
+        .append(series_title_element)
+            .attr("role", "heading")
+            .attr("id", "datasetsubgroup-title")
+            .text(data[current_data_row_index][this.names_columns[0]]);
 
+      // add the bars to the chart
+      let bandwidth = this.round(xScale.bandwidth()/this.values_columns.length);
+      let datapoints = dataareasubgroup.selectAll(".bar")
+          .data(this.values_columns)
+          .enter()
+          .append("g")
+          .attr("tabindex", "0")
+          .attr("transform", (coulum_header: any, i: number) =>
+          {
+            return "translate(" + this.round((bandwidth * i) + xScale(data[current_data_row_index][this.names_columns[0]]))
+                + "," + this.round(yScale(data[current_data_row_index][coulum_header])) + ")";
+          })
+          .attr("role", "datapoint");
 
-    if (metadata.target === Target.SCREEN_READER)
-    {
-      datapoints.attr("aria-labelledby", (d : any, i : number) =>
+      if (metadata.target === Target.SCREEN_READER)
       {
-        return "x" + ( xScale.domain().indexOf(d[this.names_columns[0]]) + 1)
-            + " value" + (i+1);
-      });
+        datapoints.attr("aria-labelledby", (coulum_header: any, i: number) =>
+        {
+          return "x" + ( xScale.domain().indexOf(data[current_data_row_index][coulum_header]) + 1)
+              + " value" + current_data_row_index + "-" + (i+1) + " legenditem" + i;
+        });
+      }
+      else
+      {
+        datapoints.attr("aria-labelledby", (coulum_header: any, i: number) =>
+        {
+          return "x" + ( xScale.domain().indexOf(data[current_data_row_index][this.names_columns[0]]) + 1 + " legenditem" + i);
+        });
+      }
+      
+      
+
+      datapoints.append("rect")
+          .attr('fill', (coulum_header: any) =>
+          {
+            return this.color(coulum_header);
+          })
+          .attr("width", bandwidth)
+          .attr("height", (coulum_header: any) =>
+          {
+            return this.round(this.CHART_HEIGHT - yScale(data[current_data_row_index][coulum_header]));
+          });
+      
+      // Add values to bars
+      let labels = undefined;
+      bandwidth = this.round(bandwidth / 2);
+      //bandwidth1 = this.round(bandwidth1 / 2);
+
+      if (metadata.bar_values)
+      {
+        labels = datapoints.append("text")
+            .attr("x", bandwidth)
+            .attr("y", "10")
+            .attr("text-anchor", "middle")
+            .attr("font-size", "5")
+            .attr("fill", "black");
+      }
+      else if (metadata.tooltips)
+      {
+        labels = datapoints.append("title");
+      }
+      else
+      {
+        labels = datapoints.append("desc");
+      }
+      
+      labels.text( (coulum_header: any) =>
+      {
+        return data[current_data_row_index][coulum_header];
+      })
+          .attr("role", "datavalue")
+          .attr("id", (coulum_header: any, i: number) =>
+          {
+            return "value" + current_data_row_index + "-" + (i+1);
+          });
+    }
+    
+
+    // Add Legend
+
+    if (metadata.legend)
+    {
+      this.addLegend(metadata.legend_title, this.color, true);
     }
     else
     {
-      datapoints.attr("aria-labelledby", (d : any, i : number) =>
-      {
-        return "x" + ( xScale.domain().indexOf(d[this.names_columns[0]]) + 1);
-      });
+      
+      let legend = this.root.append("g")
+          .attr("role", "legend")
+          .attr("aria-roledescription", Text.LEGEND)
+          .attr("aria-labelledby", "legend-title")
+          .attr("tabindex", "0")
+          .attr("transform", "translate(" + (this.CHART_WIDTH / 2) + ","
+              + (this.CHART_HEIGHT / 2) + ")");
+      
+      legend.append("desc")
+          .attr("role", "heading")
+          .attr("id", "legend-title")
+          .text(metadata.legend_title);
+      
+      legend.selectAll("g")
+          .data(this.color.domain())
+          .enter()
+          .append("g")
+              .attr("role", "legenditem")
+              .attr("tabindex", "0")
+              .attr("id", (d : any, i : number) =>
+              {
+                return "legenditem" + (i+1);
+              })
+              .attr("transform", (d: any, i : number) =>
+              {
+                return "translate(" + i*10 + ")";
+              })
+              .attr("style", "text-anchor: middle;")
+              .append("text")
+                  .text( (d: any) =>
+                  {
+                    return d;
+                  });
+              
     }
-    
-    let bandwidth = this.round(xScale.bandwidth());
-    /*datapoints.append("rect")
-        .attr("class", "bar")
-        .attr("width", bandwidth)
-        .attr("height", (d: any) =>
-        {
-          return this.round(this.CHART_HEIGHT - yScale(d[this.values_columns[0]]));
-        });*/
 
-    datapoints.append("rect")
-        .attr("class", "bar")
-        .attr("width", bandwidth)
-        .attr("height", (i: number) =>
-        {
-          //console.log(i);
-          return this.round(this.CHART_HEIGHT - yScale(data[0][this.values_columns[i]]));
-        });
 
-    /*let bandwidth1 = this.round(xScale.bandwidth());
-    datapoints1.append("rect")
-        .attr("class", "bar")
-        .attr("width", bandwidth1)
-        .attr("height", (d: any) =>
-        {
-          return this.round(this.CHART_HEIGHT - yScale(d[this.values_columns[1]]));
-        });*/
-    
-    // Add values to bars
-    let labels = undefined;
-    bandwidth = this.round(bandwidth / 2);
-    //bandwidth1 = this.round(bandwidth1 / 2);
-
-    if (metadata.bar_values)
-    {
-      labels = datapoints.append("text")
-          .attr("x", bandwidth)
-          .attr("y", "10")
-          .attr("text-anchor", "middle")
-          .attr("font-size", "10")
-          .attr("fill", "white");
-    }
-    else if (metadata.tooltips)
-    {
-      labels = datapoints.append("title");
-    }
-    else
-    {
-      labels = datapoints.append("desc");
-    }
-    
-    labels.text( (d: any) =>
-    {
-      return d[this.values_columns[0]];
-    })
-        .attr("role", "datavalue")
-        .attr("id", (d : any, i : number) =>
-        {
-          return "value" + (i+1);
-        });
-    
-    
     return doc.documentElement.outerHTML;
   }
   
