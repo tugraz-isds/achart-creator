@@ -18,12 +18,7 @@ export class BarChartGrouped extends Chart
 
   create(data : object[], metadata : any, doc : Document) : string
   {
-    // As bar charts currently support a single data series only,
-    // make sure only the first value column is considered:
-    if (!metadata.column)
-    {
-   //   metadata.column = 1;
-    }
+    
 
     this.init(data, metadata, doc);
 
@@ -34,24 +29,32 @@ export class BarChartGrouped extends Chart
     let xScale = d3.scaleBand().range ([0, this.CHART_WIDTH]).padding(0.4),
     yScale = d3.scaleLinear().range ([this.CHART_HEIGHT, 0]);
     
-    let y_min = d3.min(data, (d: any) =>
+    var y_max = 0;
+    var y_min = Infinity;
+    for (var row_index = 0; row_index < data.length; row_index++)
     {
-      return d[this.values_columns[0]];
-    });
-    let y_max = d3.max(data, (d: any) =>
-    {
-      return d[this.values_columns[0]];
-    });
-    y_min = Math.round(y_min - y_min/2);
-    y_max = Math.round(y_max + y_max/2);
+      for (var col_index = 0; col_index < this.values_columns.length; col_index++)
+      {
+        if (data[row_index][this.values_columns[col_index]] >= y_max)
+        {
+          y_max = data[row_index][this.values_columns[col_index]];
+        }
+        if (data[row_index][this.values_columns[col_index]] <= y_min)
+        {
+          y_min = data[row_index][this.values_columns[col_index]];
+        }
+      }
+    }
+    y_min = Math.round(y_min - y_min/4);
+    y_max = Math.round(y_max + y_max/4);
     
     // map data values to x and y scale
     xScale.domain(data.map( (d: any) =>
     {
       return d[this.names_columns[0]];
     }));
-    // TODO: Fix scaling
-    yScale.domain([0, 100]);
+   
+    yScale.domain([y_min, y_max]);
     
     // group for x-axis:
     let xAxisGroup = this.root.append("g");
@@ -132,11 +135,27 @@ export class BarChartGrouped extends Chart
         .range(d3.schemeSet2);
     
     this.color_occurances = new Array<number>(this.color.domain().length);
+    let dataset = this.root.append("g")
+      .attr("id", "dataset")
+      .attr("role", "dataset")
+      .attr("tabindex", "0")
+    let series_title_element = "desc";
+      if (metadata.tooltips)
+      {
+        dataset.attr("tabindex", "0");
+        series_title_element = "title";
+      }
+      
+      dataset.attr("aria-labelledby", "dataset-title")
+          .append(series_title_element)
+              .attr("role", "heading")
+              .attr("id", "dataset-title")
+              .text(metadata.chart_title);
 
     for (let current_data_column_index = 0; current_data_column_index < this.values_columns.length; current_data_column_index++) {
-      let bar = this.root.append("g")
-          .attr("id", "dataseries-" + current_data_column_index)
-          .attr("role", "datseries");
+      let bar = dataset.append("g")
+          .attr("id", "dataseries-" + (current_data_column_index + 1))
+          .attr("role", "dataseries");
       
       // If there's a data series title:
       if (metadata.series_titles[current_data_column_index])
@@ -149,10 +168,10 @@ export class BarChartGrouped extends Chart
           series_title_element = "title";
         }
         
-        bar.attr("aria-labelledby", "dataseries-title-" + current_data_column_index)
+        bar.attr("aria-labelledby", "dataseries-title-" + (current_data_column_index + 1))
             .append(series_title_element)
                 .attr("role", "heading")
-                .attr("id", "dataseries-title-" + current_data_column_index)
+                .attr("id", "dataseries-title-" + (current_data_column_index + 1))
                 .text(metadata.series_titles[current_data_column_index]);
       }
       
@@ -176,7 +195,7 @@ export class BarChartGrouped extends Chart
         datapoints.attr("aria-labelledby", (d : any, i : number) =>
         {
           return "x" + ( xScale.domain().indexOf(d[this.names_columns[0]]) + 1)
-              + " value" + current_data_column_index + "-" + (i+1);
+              + " value" + (current_data_column_index + 1) + "-" + (i+1);
         });
       }
       else
@@ -225,7 +244,7 @@ export class BarChartGrouped extends Chart
           .attr("role", "datavalue")
           .attr("id", (d : any, i : number) =>
           {
-            return "value" + current_data_column_index + "-" + (i+1);
+            return "value" + (current_data_column_index + 1) + "-" + (i+1);
           });
       }
 
@@ -235,44 +254,44 @@ export class BarChartGrouped extends Chart
     {
       this.addLegend(metadata.legend_title, this.color, true);
     }
-    else
-    {
+    // else
+    // {
       
-      let legend = this.root.append("g")
-          .attr("role", "legend")
-          .attr("aria-roledescription", Text.LEGEND)
-          .attr("aria-labelledby", "legend-title")
-          .attr("tabindex", "0")
-          .attr("transform", "translate(" + (this.CHART_WIDTH / 2) + ","
-              + (this.CHART_HEIGHT / 2) + ")");
+    //   let legend = this.root.append("g")
+    //       .attr("role", "legend")
+    //       .attr("aria-roledescription", Text.LEGEND)
+    //       .attr("aria-labelledby", "legend-title")
+    //       .attr("tabindex", "0")
+    //       .attr("transform", "translate(" + (this.CHART_WIDTH / 2) + ","
+    //           + (this.CHART_HEIGHT / 2) + ")");
       
-      legend.append("desc")
-          .attr("role", "heading")
-          .attr("id", "legend-title")
-          .text(metadata.legend_title);
+    //   legend.append("desc")
+    //       .attr("role", "heading")
+    //       .attr("id", "legend-title")
+    //       .text(metadata.legend_title);
       
-      legend.selectAll("g")
-          .data(this.color.domain())
-          .enter()
-          .append("g")
-              .attr("role", "legenditem")
-              .attr("tabindex", "0")
-              .attr("id", (d : any, i : number) =>
-              {
-                return "legenditem" + (i+1);
-              })
-              .attr("transform", (d: any, i : number) =>
-              {
-                return "translate(" + i*10 + ")";
-              })
-              .attr("style", "text-anchor: middle;")
-              .append("text")
-                  .text( (d: any) =>
-                  {
-                    return d;
-                  });
+    //   legend.selectAll("g")
+    //       .data(this.color.domain())
+    //       .enter()
+    //       .append("g")
+    //           .attr("role", "legenditem")
+    //           .attr("tabindex", "0")
+    //           .attr("id", (d : any, i : number) =>
+    //           {
+    //             return "legenditem" + (i+1);
+    //           })
+    //           .attr("transform", (d: any, i : number) =>
+    //           {
+    //             return "translate(" + i*10 + ")";
+    //           })
+    //           .attr("style", "text-anchor: middle;")
+    //           .append("text")
+    //               .text( (d: any) =>
+    //               {
+    //                 return d;
+    //               });
               
-    }
+    // }
 
 
     return doc.documentElement.outerHTML;
