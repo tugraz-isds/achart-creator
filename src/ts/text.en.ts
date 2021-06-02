@@ -12,6 +12,7 @@ export class Text
   {
     bar: `Bar Chart`,
     bargroup: `Grouped Bar Chart`,
+    barstack: `Stacked Bar Chart`,
     line: `Line Chart`,
     pie: `Pie Chart`,
     scatter: `Scatter Plot`,
@@ -68,15 +69,24 @@ export class Text
   static readonly NO_COLUMN = `No column specified`;
   
   static readonly COLUMN_REQUIREMENTS = `Column must be a number > 0`;
+
+  static readonly ROTATION_REQUIREMENTS = `Rotation must be a number between 180 and -180`;
   
   static readonly NO_PRECISION = `No precision specified`;
 
   static readonly PRECISION_REQUIREMENTS = `Precision must be a number >= 0`;
 
-  static readonly NO_GROUP = `No group/s specified`;
+  static readonly NO_COLUMNS = `No columns specified`;
+
+  static readonly NO_COLORS = `No colors specified`;
   
   static readonly CSV_HAS_ONLY = `The CSV file contains only `;
   
+  static readonly NOT_MULTIDIM_CHART_TYPE = 
+  `columns work only with multidimensional chart types like: 
+    bar-grouped
+    bar-stacked`;
+    
   static readonly VALUE_COLUMNS = ` value columns`;
   
   static readonly ONLY_NUMERICAL_DATA =
@@ -99,7 +109,8 @@ acreate [--chart] CHART-TYPE [--dataset CSV-FILENAME]
         [--no-legend] [--no-tooltips] [--no-bar-values]
         [--no-segment-values] [--no-segment-percentages]
         [--segment-percentage-precision PLACES] [--svg-precision PLACES]
-        [--version] [--help]
+        [--version] [--help] [--columns] [--rotate-x-labels [ROTATION]]
+        [--rotate-y-labels [ROTATION]] [--colors]
 
 
 Mandatory arguments:
@@ -107,7 +118,8 @@ Mandatory arguments:
      CHART-TYPE                             Specifies the type of the chart
                                             to be created. Currently
                                             supported chart types are bar,
-                                            line, and pie (case-insensitive).
+                                            line, pie, bar-grouped, bar-stacked
+                                            (case-insensitive).
                                             This argument can be given either
                                             as the first command-line
                                             parameter or, alternatively, at
@@ -282,6 +294,40 @@ Optional arguments:
                                             coordinates and lengths.
                                             PLACES must be an integer ≥ 0.
                                             The default is 3.
+
+     --columns DATA-COLUMN                  Specifies the CSV columns
+                                            containing the data series to
+                                            be grouped. DATA-COLUMN is an
+                                            string with column indices or 
+                                            column name, or both. If column
+                                            indices are used the columns
+                                            are assumed to be counted with
+                                            increasing numbers from left to
+                                            right. If the option is not
+                                            given, all columns of the CSV
+                                            file, starting by number 1,
+                                            will be grouped.
+
+     --rotate-x-labels [ROTATION]           Rotate the x labels by -45 degree.
+                                            If ROTATION is given x labels are
+                                            rotated by ROTATION. ROTATION must
+                                            be a number between -180 and 180.
+
+     --rotate-y-labels [ROTATION]           Rotate the x labels by -45 degree.
+                                            If ROTATION is given x labels are
+                                            rotated by ROTATION. ROTATION must
+                                            be a number between -180 and 180.
+
+     --colors COLORS                        Specidies the color of each datagroup.
+                                            COLORS is a string of colors. All
+                                            colors are seperated with a whitespace.
+                                            Following color types are supported:
+                                              - d3 colornames (e.g. red, green, ...)
+                                              - HEX code (e.g. #69b3a2)
+                                              - rgb(r, g, b)
+                                              - rgba(r, g, b, a)
+                                            The different types can also be 
+                                            combined in onestring.
 
      --version                              Prints version information
                                             and exits.

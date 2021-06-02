@@ -4,7 +4,7 @@ import { Target } from "./achart-creator";
 
 const d3 = require("d3");
 
-export class BarChartGrouped extends Chart
+export class BarChartStacked extends Chart
 {
   readonly CHART_WIDTH = 600
   readonly SVG_HEIGHT = this.CHART_Y + this.CHART_HEIGHT + 2 * this.AXIS_HEIGHT + this.MARGIN
@@ -18,42 +18,41 @@ export class BarChartGrouped extends Chart
 
   create(data : object[], metadata : any, doc : Document) : string
   {
-    
-
     this.init(data, metadata, doc);
 
     // Chart root
-    this.root.attr("aria-charttype", "bargrouped")
-        .attr("aria-roledescription", Text.CHART_TYPE.bargroup);
+    this.root.attr("aria-charttype", "bar-stacked")
+        .attr("aria-roledescription", Text.CHART_TYPE.barstack);
     
     let xScale = d3.scaleBand().range ([0, this.CHART_WIDTH]).padding(0.4),
     yScale = d3.scaleLinear().range ([this.CHART_HEIGHT, 0]);
     
+    
     var y_max = 0;
-    var y_min = Infinity;
+    var y_min = 0;
     for (var row_index = 0; row_index < data.length; row_index++)
     {
+      var current_bar_height = 0;
       for (var col_index = 0; col_index < this.values_columns.length; col_index++)
       {
-        if (data[row_index][this.values_columns[col_index]] >= y_max)
-        {
-          y_max = data[row_index][this.values_columns[col_index]];
-        }
-        if (data[row_index][this.values_columns[col_index]] <= y_min)
-        {
-          y_min = data[row_index][this.values_columns[col_index]];
-        }
+        current_bar_height += data[row_index][this.values_columns[col_index]];
+      }
+      if (current_bar_height >= y_max){
+        y_max = current_bar_height;
       }
     }
-    y_min = Math.round(y_min - y_min/4);
+    // y_min = Math.round(y_min - y_min/4);
     y_max = Math.round(y_max + y_max/4);
+    y_max = Math.min(y_max, 100); // Cap y_max to maximum 100
     
     // map data values to x and y scale
     xScale.domain(data.map( (d: any) =>
     {
       return d[this.names_columns[0]];
     }));
-   
+    // Stacked allways between 0 and 100??
+    // var y_max = 100;
+    // var y_min = 0;
     yScale.domain([y_min, y_max]);
     
     // group for x-axis:
@@ -125,6 +124,7 @@ export class BarChartGrouped extends Chart
     this.roundAttributeValue(ticks, "transform");
     
     ticks.select("text")
+        .attr("role", "axislabel")
         .style("text-anchor", "end")
         .attr("transform", "rotate(" + metadata.y_label_rotation_degree + ")")
         .attr("id", (d : any, i : number) =>
@@ -133,7 +133,6 @@ export class BarChartGrouped extends Chart
         });
     
     // set the color scale
-
     // If colors are given and each color maps a colum use all.
     // If colors are given and there are more colors than columns map them by index
     // else use all available colors and fill the rest with d3 schemeSet2
@@ -176,6 +175,7 @@ export class BarChartGrouped extends Chart
               .attr("id", "dataset-title")
               .text(metadata.chart_title);
 
+    var prev_y_heigh = new Array<number>(data.length).fill(0);
     for (let current_data_column_index = 0; current_data_column_index < this.values_columns.length; current_data_column_index++) {
       let bar = dataset.append("g")
           .attr("id", "datagroup-" + (current_data_column_index + 1))
@@ -201,19 +201,21 @@ export class BarChartGrouped extends Chart
       
     
       // add the bars to the chart
-      let bandwidth = this.round(xScale.bandwidth()/this.values_columns.length);
+      let bandwidth = this.round(xScale.bandwidth());
       let datapoints = bar.selectAll(".bar")
           .data(data)
           .enter()
           .append("g")
               .attr("tabindex", "0")
-              .attr("transform", (d: any) =>
+              .attr("transform", (d: any, i: number) =>
               {
-                return "translate(" + this.round((bandwidth * current_data_column_index) + xScale(d[this.names_columns[0]]))
-                    + "," + this.round(yScale(d[this.values_columns[current_data_column_index]])) + ")";
+                var bar_height = (this.CHART_HEIGHT - this.round(yScale(d[this.values_columns[current_data_column_index]]))) + prev_y_heigh[i];
+                var correct_y_translate = this.CHART_HEIGHT - bar_height;
+                prev_y_heigh[i] = bar_height;
+                return "translate(" + this.round(xScale(d[this.names_columns[0]]))
+                    + "," + correct_y_translate + ")";
               })
               .attr("role", "datapoint");
-      
       if (metadata.target === Target.SCREEN_READER)
       {
         datapoints.attr("aria-labelledby", (d : any, i : number) =>
@@ -247,9 +249,12 @@ export class BarChartGrouped extends Chart
       {
         labels = datapoints.append("text")
             .attr("x", bandwidth)
-            .attr("y", "10")
+            .attr("y", (d: any) =>
+            {
+              return this.round((this.CHART_HEIGHT - yScale(d[this.values_columns[current_data_column_index]]) + 10)/2);
+            })
             .attr("text-anchor", "middle")
-            .attr("font-size", "5")
+            .attr("font-size", "10")
             .attr("fill", "black");
       }
       else if (metadata.tooltips)

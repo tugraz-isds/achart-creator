@@ -3,9 +3,11 @@ import { Text } from "./text.en";
 import { Chart } from "./chart";
 import { BarChart } from "./bar-chart";
 import { BarChartGrouped } from "./bar-chart-grouped";
+import { BarChartStacked } from "./bar-chart-stacked";
 import { LineChart } from "./line-chart";
 import { PieChart } from "./pie-chart";
 
+const d3 = require("d3");
 
 const { JSDOM } = require("jsdom");
 
@@ -58,6 +60,9 @@ export class AChartCreator {
       segment_percentages: true,
       label_round_factor: 10,
       target: Target.ACHART,
+      x_label_rotation_degree: "0",
+      y_label_rotation_degree: "0",
+      colors: d3.schemeSet2,
     }
 
   chart: Chart
@@ -159,6 +164,32 @@ export class AChartCreator {
           this.chart_metadata.column = column;
           break;
 
+        case "--rotate-x-labels":
+          if ((++index) >= process.argv.length || String(process.argv[index]).startsWith("--")) {
+            this.chart_metadata.x_label_rotation_degree = "-45";
+            --index;
+            break;
+          }
+          let x_rotation = +process.argv[index];
+          if (!(/\d/g.test(process.argv[index])) || (x_rotation < -180) || (x_rotation > 180)) {
+            this.syntaxError(Text.ROTATION_REQUIREMENTS);
+          }
+          this.chart_metadata.x_label_rotation_degree = String(x_rotation);
+          break;
+
+        case "--rotate-y-labels":
+          if ((++index) >= process.argv.length || String(process.argv[index]).startsWith("--")) {
+            this.chart_metadata.y_label_rotation_degree = "-45";
+            --index;
+            break;
+          }
+          let y_rotation = +process.argv[index];
+          if (!(/\d/g.test(process.argv[index])) || (y_rotation < -180) || (y_rotation > 180)) {
+            this.syntaxError(Text.ROTATION_REQUIREMENTS);
+          }
+          this.chart_metadata.y_label_rotation_degree = String(y_rotation);
+          break;
+
         case "--svg-precision":
           if ((++index) >= process.argv.length) {
             this.syntaxError(Text.NO_PRECISION);
@@ -216,11 +247,26 @@ export class AChartCreator {
           in chart.ts
           Check if the given columns exist!
           */
-          if ((++index) >= process.argv.length) {
-            this.syntaxError(Text.NO_GROUP);
+          if (this.chart_type == "bar-grouped" || 
+              this.chart_type == "bar-stacked" ||
+              this.chart_type == "line") {
+            if ((++index) >= process.argv.length) {
+              this.syntaxError(Text.NO_COLUMNS);
+            }
+            var columns = process.argv[index];
+            this.chart_metadata.columns = columns.split(" ");
           }
-          var columns = process.argv[index];
-          this.chart_metadata.columns = columns.split(" ");
+          else {
+            this.syntaxError(Text.NOT_MULTIDIM_CHART_TYPE);
+          }  
+          break;
+
+        case "--colors":
+          if ((++index) >= process.argv.length) {
+            this.syntaxError(Text.NO_COLORS);
+          }
+          var colors = process.argv[index];
+          this.chart_metadata.colors = colors.split(" ");
           break;
 
         default:
@@ -244,6 +290,9 @@ export class AChartCreator {
         this.chart = new BarChartGrouped();
         break;
 
+      case "bar-stacked":
+        this.chart = new BarChartStacked();
+        break;
       case "line":
         this.chart = new LineChart();
         break;

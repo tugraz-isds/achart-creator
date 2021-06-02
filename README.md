@@ -55,8 +55,16 @@ npx gulp build
 To create a chart, the following syntax is used:
 
 ```
-node build/acreate.js [--chart] CHART-TYPE [--dataset CSV-FILENAME] [--output SVG-FILENAME] [--chart-title TITLE] [--chart-desc DESCRIPTION] [--x-axis-title TITLE] [--y-axis-title TITLE] [--legend-title TITLE] [--target SOFTWARE] [--column DATA-COLUMN] [--no-sort] [--no-legend] [--no-tooltips] [--no-bar-values] [--no-segment-values] [--no-segment-percentages] [--segment-percentage-precision PLACES] [--svg-precision PLACES] [--version] [--help]
-```
+acreate [--chart] CHART-TYPE [--dataset CSV-FILENAME]
+        [--output SVG-FILENAME] [--chart-title TITLE]
+        [--chart-desc DESCRIPTION] [--x-axis-title TITLE]
+        [--y-axis-title TITLE] [--legend-title TITLE]
+        [--target SOFTWARE] [--column DATA-COLUMN] [--no-sort]
+        [--no-legend] [--no-tooltips] [--no-bar-values]
+        [--no-segment-values] [--no-segment-percentages]
+        [--segment-percentage-precision PLACES] [--svg-precision PLACES]
+        [--version] [--help] [--columns] [--rotate-x-labels [ROTATION]]
+        [--rotate-y-labels [ROTATION]] [--colors]
 
 
 Mandatory arguments:
@@ -64,7 +72,8 @@ Mandatory arguments:
      CHART-TYPE                             Specifies the type of the chart
                                             to be created. Currently
                                             supported chart types are bar,
-                                            line, and pie (case-insensitive).
+                                            line, pie, bar-grouped, bar-stacked
+                                            (case-insensitive).
                                             This argument can be given either
                                             as the first command-line
                                             parameter or, alternatively, at
@@ -240,6 +249,40 @@ Optional arguments:
                                             PLACES must be an integer ≥ 0.
                                             The default is 3.
 
+     --columns DATA-COLUMN                  Specifies the CSV columns
+                                            containing the data series to
+                                            be grouped. DATA-COLUMN is an
+                                            string with column indices or 
+                                            column name, or both. If column
+                                            indices are used the columns
+                                            are assumed to be counted with
+                                            increasing numbers from left to
+                                            right. If the option is not
+                                            given, all columns of the CSV
+                                            file, starting by number 1,
+                                            will be grouped.
+
+     --rotate-x-labels [ROTATION]           Rotate the x labels by -45 degree.
+                                            If ROTATION is given x labels are
+                                            rotated by ROTATION. ROTATION must
+                                            be a number between -180 and 180.
+
+     --rotate-y-labels [ROTATION]           Rotate the x labels by -45 degree.
+                                            If ROTATION is given x labels are
+                                            rotated by ROTATION. ROTATION must
+                                            be a number between -180 and 180.
+
+     --colors COLORS                        Specidies the color of each datagroup.
+                                            COLORS is a string of colors. All
+                                            colors are seperated with a whitespace.
+                                            Following color types are supported:
+                                              - d3 colornames (e.g. red, green, ...)
+                                              - HEX code (e.g. #69b3a2)
+                                              - rgb(r, g, b)
+                                              - rgba(r, g, b, a)
+                                            The different types can also be 
+                                            combined in onestring.
+
      --version                              Prints version information
                                             and exits.
 
@@ -279,6 +322,18 @@ To create a pie chart from the data in column 3 of the CSV file
 data/fruit.csv:
 ```
 node build/acreate.js --chart pie --dataset data/fruit.csv --legend-title Fruits --column 3
+```
+
+To create a stacked bar chart from the data of the CSV file
+data/nrw2019.csv:
+```
+node build/acreate.js --chart bar-stacked --dataset .\data\nrw2019.csv --chart-title "Seats of Political Parties in Austria" --chart-desc "Seats of Political Parties in Austria per Federal state" --x-axis-title "Federal States" --y-axis-title "Number of  Seats in percent" --colors "#63C3D0 #CE000C #0056A2 #88B626 #E84188" --rotate-x-labels
+```
+
+To create a grouped bar chart from the data of the CSV file
+data/nrw2019.csv:
+```
+node build/acreate.js --chart bar-grouped --dataset .\data\nrw2019.csv --chart-title "Seats of Political Parties in Austria" --chart-desc "Seats of Political Parties in Austria per Federal state" --x-axis-title "Federal States" --y-axis-title "Number of  Seats in percent" --colors "#63C3D0 #CE000C #0056A2 #88B626 #E84188" --rotate-x-labels
 ```
 
 

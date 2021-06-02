@@ -16,7 +16,7 @@ export abstract class Chart
   readonly STYLE : string
   
   // Width of a possible legend at the right:
-  readonly LEGEND_WIDTH = 200
+  readonly LEGEND_WIDTH = 75
   
   
   // Dimensions and margins of the chart
@@ -47,6 +47,7 @@ export abstract class Chart
   
   names_columns : string[]
   values_columns : string[]
+  values_columns_all : string[]
   
   
   // States if x-axis is numerical or categorical:
@@ -97,7 +98,36 @@ export abstract class Chart
 
     if (metadata.columns.length > 0)
     {
-      this.values_columns = metadata.columns
+      this.values_columns_all = this.values_columns;
+      let columns_to_use = [];
+      for (let column of metadata.columns){
+        if (isNaN(+column)){
+          if (!columns_to_use.includes(column)){
+            columns_to_use.push(column);
+          }
+          else{
+            console.log(column + " is already choosen not adding it again");
+            continue;
+          }
+          continue;
+        }
+        else{
+          if (((+(column)) > this.values_columns.length) || +(column) == 0){
+            console.log((+(column)) + " is not a valid index for a column." + 
+            " must be between 1 and " + this.values_columns.length);
+            continue;
+          }
+          let column_to_add = this.values_columns[(+(column) - 1)];
+          if (!columns_to_use.includes(column_to_add)){
+            columns_to_use.push(column_to_add);
+          }
+          else{
+            console.log(column_to_add + " is already choosen not adding it again");
+            continue;
+          }
+        }
+      }
+      this.values_columns = columns_to_use;
     }
     
     
