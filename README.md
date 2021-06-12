@@ -272,7 +272,7 @@ Optional arguments:
                                             rotated by ROTATION. ROTATION must
                                             be a number between -180 and 180.
 
-     --colors COLORS                        Specidies the color of each datagroup.
+     --colors COLORS                        Specifies the color of each datagroup.
                                             COLORS is a string of colors. All
                                             colors are seperated with a whitespace.
                                             Following color types are supported:
@@ -295,6 +295,7 @@ contains spaces, enclose it in double quotation marks (""). Filenames
 may contain relative or absolute paths. If no path is given,
 the current working directory is assumed. Sample CSV data files can be
 found in the `data/` directory.
+```
 
 Note that, in order to use AChart Creator, you first need to run:
 ```

@@ -23,6 +23,7 @@
     "d3": "^6.2.0",
     "fs": "0.0.1-security",
     "jsdom": "^16.4.0",
+    "node-sass": "^6.0.0",
     "xml-formatter": ">=2.3.1"
   },
   "devDependencies": {
@@ -30,6 +31,7 @@
     "child_process": ">=1.0.2",
     "gulp": ">=4.0.2",
     "gulp-clean": ">=0.4.0",
+    "gulp-sass": "^4.1.0",
     "gulp-typescript": ">=5.0.1",
     "merge2": ">=1.2.4",
     "nexe": ">=3.3.7",

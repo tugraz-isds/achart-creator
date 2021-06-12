@@ -32,7 +32,11 @@ export class FileHelper
     FS.writeFileSync(output_file, markup, "utf8");
   }
   
-  
+  static transpose_csv_json(data: object[]): any
+  {
+    // console.log(data)
+    return data;
+  }
   static loadFile(achart_creator : AChartCreator) : void
   {
     
@@ -74,8 +78,8 @@ export class FileHelper
         .then( (data : object[]) =>
         {
           console.info(Text.FILE + achart_creator.input_file + Text.LOADED);
-          
-          achart_creator.create_chart(data);
+          var data_to_use = this.transpose_csv_json(data);
+          achart_creator.create_chart(data_to_use);
         }).catch( (err) =>
         {
           console.error(Text.ERROR + Text.CANNOT_OPEN + achart_creator.input_file);

@@ -63,6 +63,7 @@ export class AChartCreator {
       x_label_rotation_degree: "0",
       y_label_rotation_degree: "0",
       colors: d3.schemeSet2,
+      group_by: "rows",
     }
 
   chart: Chart
@@ -162,6 +163,18 @@ export class AChartCreator {
             this.syntaxError(Text.COLUMN_REQUIREMENTS);
           }
           this.chart_metadata.column = column;
+          break;
+
+        case "--aria-data-group":
+          if ((++index) >= process.argv.length) {
+            this.syntaxError(Text.NO_DATA_GROUP);
+          }
+          let group_by = process.argv[index];
+          if (group_by == "columns" || group_by == "rows"){
+            this.chart_metadata.group_by = group_by;
+          } else {
+            this.syntaxError(Text.DATA_GROUP_REQUIREMENTS);
+          }
           break;
 
         case "--rotate-x-labels":

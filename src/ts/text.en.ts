@@ -81,6 +81,10 @@ export class Text
   static readonly NO_COLORS = `No colors specified`;
   
   static readonly CSV_HAS_ONLY = `The CSV file contains only `;
+
+  static readonly NO_DATA_GROUP = `No Aria Data Group specified`;
+
+  static readonly DATA_GROUP_REQUIREMENTS = `Aria Data Group must be a string columns or rows `;
   
   static readonly NOT_MULTIDIM_CHART_TYPE = 
   `columns work only with multidimensional chart types like: 
