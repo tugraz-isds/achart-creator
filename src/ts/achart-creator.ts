@@ -306,6 +306,7 @@ export class AChartCreator {
       case "bar-stacked":
         this.chart = new BarChartStacked();
         break;
+
       case "line":
         this.chart = new LineChart();
         break;

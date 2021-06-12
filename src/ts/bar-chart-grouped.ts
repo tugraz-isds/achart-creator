@@ -18,8 +18,6 @@ export class BarChartGrouped extends Chart
 
   create(data : object[], metadata : any, doc : Document) : string
   {
-    
-
     this.init(data, metadata, doc);
 
     // Chart root
