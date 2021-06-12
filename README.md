@@ -283,6 +283,10 @@ Optional arguments:
                                             The different types can also be 
                                             combined in onestring.
 
+     --aria-data-group DIMENSION            Specifies if the data should be grouped
+                                            by DIMENSION. DINMENSION can be either
+                                            rows or columns. It defaults to rows.
+
      --version                              Prints version information
                                             and exits.
 
