@@ -4,6 +4,7 @@ import { Chart } from "./chart";
 import { BarChart } from "./bar-chart";
 import { BarChartGrouped } from "./bar-chart-grouped";
 import { BarChartStacked } from "./bar-chart-stacked";
+import { ScatterChart } from "./scatter-chart";
 import { LineChart } from "./line-chart";
 import { PieChart } from "./pie-chart";
 
@@ -44,6 +45,7 @@ export class AChartCreator {
 
   chart_metadata =
     {
+      chart_type: "",
       chart_title: "",
       chart_description: "",
       x_axis_title: "",
@@ -93,6 +95,7 @@ export class AChartCreator {
         case "--chart":
           if ((++index) < process.argv.length) {
             this.chart_type = process.argv[index].toLowerCase();
+            this.chart_metadata.chart_type = this.chart_type;
           }
           break;
 
@@ -165,11 +168,15 @@ export class AChartCreator {
           this.chart_metadata.column = column;
           break;
 
-        case "--aria-data-group":
+        case "--aria-datagroup":
           if ((++index) >= process.argv.length) {
             this.syntaxError(Text.NO_DATA_GROUP);
           }
           let group_by = process.argv[index];
+          if (this.chart_type == "scatter"){
+            this.chart_metadata.group_by = group_by;
+            break;
+          }
           if (group_by == "columns" || group_by == "rows"){
             this.chart_metadata.group_by = group_by;
           } else {
@@ -262,7 +269,8 @@ export class AChartCreator {
           */
           if (this.chart_type == "bar-grouped" || 
               this.chart_type == "bar-stacked" ||
-              this.chart_type == "line") {
+              this.chart_type == "line" ||
+              this.chart_type == "scatter") {
             if ((++index) >= process.argv.length) {
               this.syntaxError(Text.NO_COLUMNS);
             }
@@ -305,6 +313,10 @@ export class AChartCreator {
 
       case "bar-stacked":
         this.chart = new BarChartStacked();
+        break;
+
+      case "scatter":
+        this.chart = new ScatterChart();
         break;
 
       case "line":

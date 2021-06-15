@@ -72,8 +72,8 @@ Mandatory arguments:
      CHART-TYPE                             Specifies the type of the chart
                                             to be created. Currently
                                             supported chart types are bar,
-                                            line, pie, bar-grouped, bar-stacked
-                                            (case-insensitive).
+                                            line, pie, bar-grouped, bar-stacked,
+                                            scatter (case-insensitive).
                                             This argument can be given either
                                             as the first command-line
                                             parameter or, alternatively, at
@@ -261,6 +261,13 @@ Optional arguments:
                                             given, all columns of the CSV
                                             file, starting by number 1,
                                             will be grouped.
+                                            If scatter plot is used the
+                                            first value of DATA-COLUMN is
+                                            used as x1 (x-axis), the second
+                                            as x2 (y-axis) the third as
+                                            size (size of the scatter points)
+                                            and the fourth as color (color of
+                                            the scatter points)
 
      --rotate-x-labels [ROTATION]           Rotate the x labels by -45 degree.
                                             If ROTATION is given x labels are
@@ -281,11 +288,18 @@ Optional arguments:
                                               - rgb(r, g, b)
                                               - rgba(r, g, b, a)
                                             The different types can also be 
-                                            combined in onestring.
+                                            combined in onestring. If scatter plot 
+                                            is uesed. The colors correspond to the
+                                            unique classes in the color column.
 
-     --aria-data-group DIMENSION            Specifies if the data should be grouped
+     --aria-datagroup DIMENSION             Specifies if the data should be grouped
                                             by DIMENSION. DINMENSION can be either
                                             rows or columns. It defaults to rows.
+                                            If scatter plot is used this command
+                                            can be used to specifie by which column
+                                            the data should be grouped. Here 
+                                            DIMENSION can be either the index of
+                                            the column or the name.
 
      --version                              Prints version information
                                             and exits.
@@ -332,13 +346,19 @@ node build/acreate.js --chart pie --dataset data/fruit.csv --legend-title Fruits
 To create a stacked bar chart from the data of the CSV file
 data/nrw2019.csv:
 ```
-node build/acreate.js --chart bar-stacked --dataset .\data\nrw2019.csv --chart-title "Seats of Political Parties in Austria" --chart-desc "Seats of Political Parties in Austria per Federal state" --x-axis-title "Federal States" --y-axis-title "Number of  Seats in percent" --colors "#63C3D0 #CE000C #0056A2 #88B626 #E84188" --rotate-x-labels
+node build/acreate.js --chart bar-stacked --dataset .\data\nrw2019.csv --chart-title "Seats of Political Parties in Austria" --chart-desc "Seats of Political Parties in Austria per Federal state" --x-axis-title "Federal States" --y-axis-title "Number of  Seats in percent" --colors "#63C3D0 #CE000C #0056A2 #88B626 #E84188 #DCDCDC" --rotate-x-labels
 ```
 
 To create a grouped bar chart from the data of the CSV file
 data/nrw2019.csv:
 ```
-node build/acreate.js --chart bar-grouped --dataset .\data\nrw2019.csv --chart-title "Seats of Political Parties in Austria" --chart-desc "Seats of Political Parties in Austria per Federal state" --x-axis-title "Federal States" --y-axis-title "Number of  Seats in percent" --colors "#63C3D0 #CE000C #0056A2 #88B626 #E84188" --rotate-x-labels
+node build/acreate.js --chart bar-grouped --dataset .\data\nrw2019.csv --chart-title "Seats of Political Parties in Austria" --chart-desc "Seats of Political Parties in Austria per Federal state" --x-axis-title "Federal States" --y-axis-title "Number of  Seats in percent" --colors "#63C3D0 #CE000C #0056A2 #88B626 #E84188 #DCDCDC" --rotate-x-labels
+```
+
+To create ascatter plot from the data of the CSV file
+data/iris.csv:
+```
+node build/acreate.js --chart scatter --dataset .\data\iris.csv --chart-title "Iris Flower" --chart-desc "Sepal length and width plotted as Scatter Plot. Color is maped to species and size is maped to petal length" --x-axis-title "sepal length" --y-axis-title "sepal width" --columns "sepal_length sepal_width petal_length species" --aria-datagroup "species"
 ```
 
 

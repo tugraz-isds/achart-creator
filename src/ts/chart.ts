@@ -48,6 +48,7 @@ export abstract class Chart
   names_columns : string[]
   values_columns : string[]
   values_columns_all : string[]
+  numeric_data: {}
   
   
   // States if x-axis is numerical or categorical:
@@ -96,6 +97,9 @@ export abstract class Chart
 
     // Check if the grouped bar plot want grouping
 
+    if (metadata.chart_type == "scatter") {
+      this.values_columns = this.names_columns.concat(this.values_columns)
+    }
     if (metadata.columns.length > 0)
     {
       this.values_columns_all = this.values_columns;
@@ -129,7 +133,6 @@ export abstract class Chart
       }
       this.values_columns = columns_to_use;
     }
-    
     
     // Infer titles, if not specified by user
     
@@ -175,7 +178,7 @@ export abstract class Chart
     
     // For each CSV cell, test if its content is numerical
     // and cast all numerical contents from string to number
-    
+    this.numeric_data = {}
     data.forEach( (d:any) =>
     {
       
@@ -184,11 +187,17 @@ export abstract class Chart
         let cell = +(d[n].trim());
         if (!Number.isNaN(cell))
         {
-          d[n] = cell;
+          if (metadata.chart_type == "scatter"){
+            d[n] = String(cell);
+          }
+          else {
+            d[n] = cell;
+          }
         }
         else
         {
           this.numerical_names = false;
+          this.numeric_data[n] = false;
         }
       });
       
@@ -202,8 +211,9 @@ export abstract class Chart
         }
         else
         {
-          console.error(Text.ERROR + Text.ONLY_NUMERICAL_DATA);
-          process.exit(4);
+          this.numeric_data[v] = false;
+          // console.error(Text.ERROR + Text.ONLY_NUMERICAL_DATA);
+          // process.exit(4);
         }
         
       });
