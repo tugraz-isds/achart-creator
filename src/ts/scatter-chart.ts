@@ -42,7 +42,7 @@ export class ScatterChart extends Chart
       this.ADD_COLOR = true;
     }
 
-    this.root.attr("aria-charttype", "line")
+    this.root.attr("aria-charttype", "scatter")
         .attr("aria-roledescription", Text.CHART_TYPE.scatter);
     
     
