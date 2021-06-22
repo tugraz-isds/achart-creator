@@ -95,9 +95,15 @@ export abstract class Chart
       this.values_columns = headers.slice(1);
     }
 
+    if (metadata.colors == [] && metadata.chart_type == "parallel-coordinates"){
+      metadata.colors = []
+    }
+    else if (metadata.colors == []){
+      metadata.colors = d3.schemeSet2;
+    }
     // Check if the grouped bar plot want grouping
 
-    if (metadata.chart_type == "scatter") {
+    if (metadata.chart_type == "scatter" || metadata.chart_type == "parallel-coordinates") {
       this.values_columns = this.names_columns.concat(this.values_columns)
     }
     if (metadata.columns.length > 0)
@@ -107,6 +113,9 @@ export abstract class Chart
       for (let column of metadata.columns){
         if (isNaN(+column)){
           if (!columns_to_use.includes(column)){
+            columns_to_use.push(column);
+          }
+          else if (metadata.chart_type == "parallel-coordinates" && metadata.colors.length > 0){
             columns_to_use.push(column);
           }
           else{
@@ -123,6 +132,9 @@ export abstract class Chart
           }
           let column_to_add = this.values_columns[(+(column) - 1)];
           if (!columns_to_use.includes(column_to_add)){
+            columns_to_use.push(column_to_add);
+          }
+          else if (metadata.chart_type == "parallel-coordinates"  && metadata.colors.length > 0){
             columns_to_use.push(column_to_add);
           }
           else{
@@ -187,7 +199,7 @@ export abstract class Chart
         let cell = +(d[n].trim());
         if (!Number.isNaN(cell))
         {
-          if (metadata.chart_type == "scatter"){
+          if (metadata.chart_type == "scatter" || metadata.chart_type == "parallel-coordinates"){
             d[n] = String(cell);
           }
           else {
@@ -204,7 +216,7 @@ export abstract class Chart
       // Values columns may contain only numerical data:
       this.values_columns.forEach( (v : any) =>
       {
-        let cell = +(d[v].trim());
+        let cell = +(String(d[v]).trim());
         if (!Number.isNaN(cell))
         {
           d[v] = cell;

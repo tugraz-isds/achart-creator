@@ -4,6 +4,7 @@ import { Chart } from "./chart";
 import { BarChart } from "./bar-chart";
 import { BarChartGrouped } from "./bar-chart-grouped";
 import { BarChartStacked } from "./bar-chart-stacked";
+import { ParallelCoordinates } from "./parallel-coordinates";
 import { ScatterChart } from "./scatter-chart";
 import { LineChart } from "./line-chart";
 import { PieChart } from "./pie-chart";
@@ -64,7 +65,7 @@ export class AChartCreator {
       target: Target.ACHART,
       x_label_rotation_degree: "0",
       y_label_rotation_degree: "0",
-      colors: d3.schemeSet2,
+      colors: [],
       group_by: "rows",
     }
 
@@ -270,6 +271,7 @@ export class AChartCreator {
           if (this.chart_type == "bar-grouped" || 
               this.chart_type == "bar-stacked" ||
               this.chart_type == "line" ||
+              this.chart_type == "parallel-coordinates" ||
               this.chart_type == "scatter") {
             if ((++index) >= process.argv.length) {
               this.syntaxError(Text.NO_COLUMNS);
@@ -283,6 +285,14 @@ export class AChartCreator {
           break;
 
         case "--colors":
+          if ((++index) >= process.argv.length) {
+            this.syntaxError(Text.NO_COLORS);
+          }
+          var colors = process.argv[index];
+          this.chart_metadata.colors = colors.split(" ");
+          break;
+        
+        case "--colours":
           if ((++index) >= process.argv.length) {
             this.syntaxError(Text.NO_COLORS);
           }
@@ -309,6 +319,10 @@ export class AChartCreator {
 
       case "bar-grouped":
         this.chart = new BarChartGrouped();
+        break;
+      
+      case "parallel-coordinates":
+        this.chart = new ParallelCoordinates();
         break;
 
       case "bar-stacked":

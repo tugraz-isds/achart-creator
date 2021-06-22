@@ -268,6 +268,10 @@ Optional arguments:
                                             size (size of the scatter points)
                                             and the fourth as color (color of
                                             the scatter points)
+                                            If parallel coordinates is used
+                                            and colors is selected the
+                                            last given column index is 
+                                            used as the color column.
 
      --rotate-x-labels [ROTATION]           Rotate the x labels by -45 degree.
                                             If ROTATION is given x labels are
@@ -355,11 +359,18 @@ data/nrw2019.csv:
 node build/acreate.js --chart bar-grouped --dataset .\data\nrw2019.csv --chart-title "Seats of Political Parties in Austria" --chart-desc "Seats of Political Parties in Austria per Federal state" --x-axis-title "Federal States" --y-axis-title "Number of  Seats in percent" --colors "#63C3D0 #CE000C #0056A2 #88B626 #E84188 #DCDCDC" --rotate-x-labels
 ```
 
-To create ascatter plot from the data of the CSV file
+To create a scatter plot from the data of the CSV file
 data/iris.csv:
 ```
 node build/acreate.js --chart scatter --dataset .\data\iris.csv --chart-title "Iris Flower" --chart-desc "Sepal length and width plotted as Scatter Plot. Color is maped to species and size is maped to petal length" --x-axis-title "sepal length" --y-axis-title "sepal width" --columns "sepal_length sepal_width petal_length species" --aria-datagroup "species"
 ```
+
+To create parallel coordinates plot from the data of the CSV file
+data/iris.csv:
+```
+node build/acreate.js --chart parallel-coordinates --dataset .\data\iris.csv --chart-title "Iris Dataset" --chart-desc "Iris Dataset" --colors "#03FC8C #03D7FC #FCA503" --rotate-x-labels --columns "sepal_length sepal_width petal_length petal_width species"
+```
+
 
 
 

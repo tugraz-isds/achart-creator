@@ -19,7 +19,8 @@ export class Text
     donut: `Donut Chart`,
     similarity: `Similarity Map`,
     time: `Time Chart`,
-    flow: `Flow Chart`
+    flow: `Flow Chart`,
+    parallelcoordinates: `Parallel Coordinates Plot` 
   };
   
   static readonly AXIS = `Axis`;
