@@ -41,7 +41,7 @@ export class ParallelCoordinates extends Chart
     }
 
     // console.log(this.values_columns_all)
-    this.root.attr("aria-charttype", "line")
+    this.root.attr("aria-charttype", "parallel-coordinates")
         .attr("aria-roledescription", Text.CHART_TYPE.parallelcoordinates);
     
     let xScale = undefined;

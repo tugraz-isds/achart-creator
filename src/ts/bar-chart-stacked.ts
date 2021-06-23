@@ -21,7 +21,7 @@ export class BarChartStacked extends Chart
     this.init(data, metadata, doc);
 
     // Chart root
-    this.root.attr("aria-charttype", "barstacked")
+    this.root.attr("aria-charttype", "bar-stacked")
         .attr("aria-roledescription", Text.CHART_TYPE.barstack);
     
     let xScale = d3.scaleBand().range ([0, this.CHART_WIDTH]).padding(0.4),
