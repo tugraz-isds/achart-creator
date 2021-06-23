@@ -294,7 +294,7 @@ export class ScatterChart extends Chart
       Scatter_group.attr("aria-labelledby",  "datagroup-title-" + (group_data_index + 1))
           .append(series_title_element)
               .attr("role", "heading")
-              .attr("id", "datagroup-" + (group_data_index + 1))
+              .attr("id", "datagroup-title-" + (group_data_index + 1))
               .text(unique_classes_to_group[group_data_index]);
       
       

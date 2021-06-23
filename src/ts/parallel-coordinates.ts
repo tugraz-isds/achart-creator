@@ -176,143 +176,29 @@ export class ParallelCoordinates extends Chart
         .domain(this.unique_classes)
         .range(colors_per_class);
 
-    for (let data_index = 0; data_index < data.length; data_index++){
-      var current_line_data = [];
-      for (let index = 0; index < this.values_columns.length; index++)
-      {
-        
-        let y = data[data_index][this.values_columns[index]];
-        let y_scaled = yScales[index](data[data_index][this.values_columns[index]]);
-        let x = this.values_columns[index];
-        current_line_data.push([x,y,y_scaled]);
+    var group_to_use = "";
+    if ((metadata.group_by != "columns") && (metadata.group_by != "rows"))
+    {
+      // this.values_columns_all = this.names_columns.concat(this.values_columns_all);
+      var group_by = metadata.group_by.trim();
+      if (!Number.isNaN(+(group_by))){
+        group_to_use = this.values_columns_all[+(group_by)];
       }
-      let line = d3.line()
-          .x( (d : any) =>
-          {
-            return xScale(d[0]);
-          })   // set the x values for the line generator
-          .y( (d: any) =>
-          {
-            return d[2];
-          })   // set the y values for the line generator
-          // .curve(d3.curveMonotoneX)
-      
-      let lineData = this.root.append("g")
-          .attr("id", "dataseries" + (data_index+1))
-          .attr("role", "dataseries")
-          .attr("aria-roledescription", Text.DATASET);
-      
-      if (metadata.series_titles[data_index])
-      {
-        
-        let series_title_element = "desc";
-        if (metadata.tooltips)
-        {
-          lineData.attr("tabindex", "0");
-          series_title_element = "title";
-        }
-        
-        lineData.attr("aria-labelledby", "dataset-title" + (data_index+1))
-            .append(series_title_element)
-                .attr("role", "heading")
-                .attr("id", "dataset-title" + (data_index+1))
-                .text(metadata.series_titles[data_index]);
+      else if(this.values_columns_all.includes(group_by)) {
+        group_to_use = group_by;
       }
-      
-      if (this.ADD_COLOR == true){
-        lineData.append("path")
-            .attr("class", "line")  
-            .attr("stroke-width", "1")
-            .attr("fill", "None") // Assign a class for styling
-            .attr("d", Chart.roundString(line(current_line_data)))   // Calls the line generator
-            .attr("stroke", this.color(data[data_index][this.values_columns_all[color_index]]));
+      else {
+        console.log("No Group found");
       }
-      else{
-        lineData.append("path")
-            .attr("class", "line")  
-            .attr("stroke-width", "1")
-            .attr("fill", "None") // Assign a class for styling
-            .attr("d", Chart.roundString(line(current_line_data)))   // Calls the line generator
-            .attr("stroke", "blue");
-      }
-
-      // for (let datapoint_index = 0; datapoint_index <= current_line_data.length; datapoint_index++){
-
-      // }
-      let datapoints = lineData.selectAll(".dot")
-          .data(current_line_data)
-          .enter()
-          .append("g")
-              .attr("tabindex", "0")
-              .attr("role", "datapoint");
-
-
-      if (metadata.target === Target.SCREEN_READER)
-      {
-          datapoints.attr("aria-labelledby", (d : any, i : number) =>
-          {
-            if (this.ADD_COLOR == true){
-              return `name${data_index+1}-${i+1} value${data_index+1}-${i+1} legenditem${this.unique_classes.indexOf(data[data_index][this.values_columns_all[color_index]])+1}`;
-            }
-            return `name${data_index+1}-${i+1} value${data_index+1}-${i+1}`;
-          });
-      }
-      else
-      {
-        
-        datapoints.attr("aria-labelledby", (d : any, i : number) =>
-        {
-          if (this.ADD_COLOR == true){
-            return `name${data_index+1}-${i+1} legenditem${this.unique_classes.indexOf(data[data_index][this.values_columns_all[color_index]])+1}`;
-          }
-          return `name${data_index+1}-${i+1}`;
-        });
-      }
-
-      if (metadata.tooltips)
-      {
-        datapoints.append("title")
-            .text((d : any) =>
-            {
-              return d[0] + ": " + d[1];
-            });
-      }
-      
-      datapoints.append("desc")
-          .attr("role", "heading")
-          .attr("id", (d : any, i : number) =>
-          {
-            return "name" + (data_index+1) + "-" + (i+1);
-          })
-          .text((d : any) =>
-          {
-            return d[0];
-          });
-
-      let datavalues = datapoints.append("desc")
-          .attr("role", "datavalue")
-          .text( (d: any) =>
-          {
-            return d[1];
-          })
-          .attr("id", (d : any, i : number) =>
-          {
-            return "value" + (data_index+1) + "-" + (i+1);
-          });
-
-
-
-
-          // .attr("fill", (d: any) =>
-          // {
-          //   if (this.ADD_COLOR == true){
-          //     return this.color((d[this.values_columns[color_index]]))
-          //   }
-          //   return "steelblue"
-          // });
-      
-    
     }
+    if (group_to_use != ""){
+      this.create_pc_grouped(data, metadata, xScale, yScales, color_index, group_to_use);
+    }
+    else{
+      this.create_pc_ungrouped(data, metadata, xScale, yScales, color_index);
+    }
+    
+    
     
     // Add a legend at the right:
     if (metadata.legend && this.ADD_COLOR == true)
@@ -354,6 +240,211 @@ export class ParallelCoordinates extends Chart
     return doc.documentElement.outerHTML;
   }
   
+  create_pc_grouped(data: object[], metadata: any, xScale: any, yScales: any, color_index: number, group_to_use: any){
+    var unique_classes_to_group = this.get_unique_classes(group_to_use, data);
+
+    var group_data = {};
+    for (var group_data_index = 0; group_data_index < unique_classes_to_group.length; group_data_index++){
+      group_data[unique_classes_to_group[group_data_index]] = [];
+    }
+    for (var group_data_index = 0; group_data_index < unique_classes_to_group.length; group_data_index++){
+      for (var row_index = 0; row_index < data.length; row_index++){
+        if (data[row_index][group_to_use] == unique_classes_to_group[group_data_index]){
+          group_data[unique_classes_to_group[group_data_index]].push(data[row_index]);
+        }
+      }
+    }
+    let ParallelData = this.root.append("g")
+        .attr("id", "dataarea")
+        .attr("role", "dataset")
+        .attr("aria-roledescription", Text.DATASET);
+    
+    // Following code could be waaay better...
+    for (var group_data_index = 0; group_data_index < unique_classes_to_group.length; group_data_index++){
+      let Parallel_group = ParallelData.append("g")
+      .attr("id", "datagroup-" + (group_data_index + 1))
+      .attr("role", "datagroup");
+      
+      let series_title_element = "desc";
+      if (metadata.tooltips)
+      {
+        Parallel_group.attr("tabindex", "0");
+        series_title_element = "title";
+      }
+      
+      Parallel_group.attr("aria-labelledby",  "datagroup-title-" + (group_data_index + 1))
+          .append(series_title_element)
+              .attr("role", "heading")
+              .attr("id", "datagroup-title-" + (group_data_index + 1))
+              .text(unique_classes_to_group[group_data_index]);
+
+      for (let data_index = 0; data_index < group_data[unique_classes_to_group[group_data_index]].length; data_index++){
+        var current_line_data = [];
+        
+        for (let index = 0; index < this.values_columns.length; index++)
+        {
+          
+          let y = group_data[unique_classes_to_group[group_data_index]][data_index][this.values_columns[index]];
+          let y_scaled = yScales[index](group_data[unique_classes_to_group[group_data_index]][data_index][this.values_columns[index]]);
+          let x = this.values_columns[index];
+          current_line_data.push([x,y,y_scaled]);
+        }
+        let line = d3.line()
+            .x( (d : any) =>
+            {
+              return xScale(d[0]);
+            })   // set the x values for the line generator
+            .y( (d: any) =>
+            {
+              return d[2];
+            })   // set the y values for the line generator
+            // .curve(d3.curveMonotoneX)
+        
+        
+        let datapoints = Parallel_group.append("g")
+            .attr("tabindex", "0")
+            .attr("role", "datapoint"); //role="datavalue"
+            // .selectAll(".dot")
+            // .data(current_line_data)
+            // .enter()
+        if (this.ADD_COLOR == true){
+          datapoints.append("path")
+              .attr("class", "line")  
+              .attr("stroke-width", "1")
+              .attr("fill", "None") // Assign a class for styling
+              .attr("d", Chart.roundString(line(current_line_data)))   // Calls the line generator
+              .attr("stroke", this.color(group_data[unique_classes_to_group[group_data_index]][data_index][this.values_columns_all[color_index]]));
+        }
+        else{
+          datapoints.append("path")
+              .attr("class", "line")  
+              .attr("stroke-width", "1")
+              .attr("fill", "None") // Assign a class for styling
+              .attr("d", Chart.roundString(line(current_line_data)))   // Calls the line generator
+              .attr("stroke", "blue");
+        }
+  
+        var text = ""
+        var labelled_by_text = ""
+        for (let datapoint_index = 0; datapoint_index < current_line_data.length; datapoint_index++){
+          text += String(this.values_columns[datapoint_index]) + ": " + current_line_data[datapoint_index][1] + " ";
+          labelled_by_text += "datavalue" + (group_data_index+1) + "-" + (data_index+1) + "-" + (datapoint_index+1) + " ";
+        }
+      
+        datapoints.attr("aria-labelledby", () =>
+        {
+          if (this.ADD_COLOR == true){
+            return `${labelled_by_text}legenditem${this.unique_classes.indexOf(data[data_index][this.values_columns_all[color_index]])+1}`;
+          }
+          return `${labelled_by_text}`;
+        });
+
+        if (metadata.tooltips)
+        {
+          datapoints.append("title")
+          .text(text);
+        }
+        for (let datapoint_index = 0; datapoint_index < current_line_data.length; datapoint_index++){
+          datapoints.append("desc")
+              .attr("role", "datavalue")
+              .attr("id", "datavalue" + (group_data_index+1) + "-" + (data_index+1) + "-" + (datapoint_index+1))
+              .attr("aria-labelledby", "yScale"+(datapoint_index+1))
+              .text(current_line_data[datapoint_index][1]);
+        }
+      }
+
+
+
+    }
+
+  }
+
+
+  create_pc_ungrouped(data: object[], metadata: any, xScale: any, yScales: any, color_index: number){
+    let ParallelData = this.root.append("g")
+    .attr("id", "dataarea")
+    .attr("role", "dataset")
+    .attr("aria-roledescription", Text.DATASET);
+    
+    // let ParallelData = ParallelData.append("g")
+    //       .attr("id", "datagroup-1" )
+    //       .attr("role", "datagroup");
+
+    for (let data_index = 0; data_index < data.length; data_index++){
+      var current_line_data = [];
+      for (let index = 0; index < this.values_columns.length; index++)
+      {
+        
+        let y = data[data_index][this.values_columns[index]];
+        let y_scaled = yScales[index](data[data_index][this.values_columns[index]]);
+        let x = this.values_columns[index];
+        current_line_data.push([x,y,y_scaled]);
+      }
+      let line = d3.line()
+          .x( (d : any) =>
+          {
+            return xScale(d[0]);
+          })   // set the x values for the line generator
+          .y( (d: any) =>
+          {
+            return d[2];
+          })   // set the y values for the line generator
+          // .curve(d3.curveMonotoneX)
+      
+      
+      let datapoints = ParallelData.append("g")
+          .attr("tabindex", "0")
+          .attr("role", "datapoint"); //role="datavalue"
+          // .selectAll(".dot")
+          // .data(current_line_data)
+          // .enter()
+      if (this.ADD_COLOR == true){
+        datapoints.append("path")
+            .attr("class", "line")  
+            .attr("stroke-width", "1")
+            .attr("fill", "None") // Assign a class for styling
+            .attr("d", Chart.roundString(line(current_line_data)))   // Calls the line generator
+            .attr("stroke", this.color(data[data_index][this.values_columns_all[color_index]]));
+      }
+      else{
+        datapoints.append("path")
+            .attr("class", "line")  
+            .attr("stroke-width", "1")
+            .attr("fill", "None") // Assign a class for styling
+            .attr("d", Chart.roundString(line(current_line_data)))   // Calls the line generator
+            .attr("stroke", "blue");
+      }
+      var text = ""
+      var labelled_by_text = ""
+      for (let datapoint_index = 0; datapoint_index < current_line_data.length; datapoint_index++){
+        text += String(this.values_columns[datapoint_index]) + ": " + current_line_data[datapoint_index][1] + " ";
+        labelled_by_text += "datavalue" + (data_index+1) + "-" + (datapoint_index+1) + " ";
+      }
+    
+      datapoints.attr("aria-labelledby", () =>
+      {
+        if (this.ADD_COLOR == true){
+          return `${labelled_by_text}legenditem${this.unique_classes.indexOf(data[data_index][this.values_columns_all[color_index]])+1}`;
+        }
+        return `${labelled_by_text}`;
+      });
+        
+      
+      if (metadata.tooltips)
+      {
+        datapoints.append("title")
+        .text(text);
+      }
+      for (let datapoint_index = 0; datapoint_index < current_line_data.length; datapoint_index++){
+        datapoints.append("desc")
+            .attr("role", "datavalue")
+            .attr("id", "datavalue" + (data_index+1) + "-" + (datapoint_index+1))
+            .attr("aria-labelledby", "yScale"+(datapoint_index+1))
+            .text(current_line_data[datapoint_index][1]);
+      }
+    }
+
+  }
   get_unique_classes(value_header: any, data: any) : any{
     // Get unique classes for color
     var unique_classes = [];

@@ -174,7 +174,7 @@ export class AChartCreator {
             this.syntaxError(Text.NO_DATA_GROUP);
           }
           let group_by = process.argv[index];
-          if (this.chart_type == "scatter"){
+          if (this.chart_type == "scatter" || this.chart_type == "parallel-coordinates" ){
             this.chart_metadata.group_by = group_by;
             break;
           }

@@ -299,7 +299,8 @@ Optional arguments:
      --aria-datagroup DIMENSION             Specifies if the data should be grouped
                                             by DIMENSION. DINMENSION can be either
                                             rows or columns. It defaults to rows.
-                                            If scatter plot is used this command
+                                            If scatter or parallel coordinates 
+                                            plot is used this command
                                             can be used to specifie by which column
                                             the data should be grouped. Here 
                                             DIMENSION can be either the index of
@@ -362,13 +363,13 @@ node build/acreate.js --chart bar-grouped --dataset .\data\nrw2019.csv --chart-t
 To create a scatter plot from the data of the CSV file
 data/iris.csv:
 ```
-node build/acreate.js --chart scatter --dataset .\data\iris.csv --chart-title "Iris Flower" --chart-desc "Sepal length and width plotted as Scatter Plot. Color is maped to species and size is maped to petal length" --x-axis-title "sepal length" --y-axis-title "sepal width" --columns "sepal_length sepal_width petal_length species" --aria-datagroup "species"
+node build/acreate.js --chart scatter --dataset .\data\iris.csv --chart-title "Iris Flower Dataset" --chart-desc "Sepal length and width plotted as Scatter Plot. Color is maped to species and size is maped to petal length" --x-axis-title "sepal length" --y-axis-title "sepal width" --columns "sepal_length sepal_width petal_length species" --aria-datagroup "species"
 ```
 
 To create parallel coordinates plot from the data of the CSV file
 data/iris.csv:
 ```
-node build/acreate.js --chart parallel-coordinates --dataset .\data\iris.csv --chart-title "Iris Dataset" --chart-desc "Iris Dataset" --colors "#03FC8C #03D7FC #FCA503" --rotate-x-labels --columns "sepal_length sepal_width petal_length petal_width species"
+node build/acreate.js --chart parallel-coordinates --dataset .\data\iris.csv --chart-title "Iris Flower Dataset" --chart-desc "Iris Flower Dataset plotted as parallel coordinates. Color is maped to species" --colors "#03FC8C #03D7FC #FCA503" --rotate-x-labels --columns "sepal_length sepal_width petal_length petal_width species" --aria-datagroup "species"
 ```
 
 

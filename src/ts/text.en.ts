@@ -123,8 +123,8 @@ Mandatory arguments:
      CHART-TYPE                             Specifies the type of the chart
                                             to be created. Currently
                                             supported chart types are bar,
-                                            line, pie, bar-grouped, bar-stacked
-                                            (case-insensitive).
+                                            line, pie, bar-grouped, bar-stacked,
+                                            scatter (case-insensitive).
                                             This argument can be given either
                                             as the first command-line
                                             parameter or, alternatively, at
@@ -312,6 +312,17 @@ Optional arguments:
                                             given, all columns of the CSV
                                             file, starting by number 1,
                                             will be grouped.
+                                            If scatter plot is used the
+                                            first value of DATA-COLUMN is
+                                            used as x1 (x-axis), the second
+                                            as x2 (y-axis) the third as
+                                            size (size of the scatter points)
+                                            and the fourth as color (color of
+                                            the scatter points)
+                                            If parallel coordinates is used
+                                            and colors is selected the
+                                            last given column index is 
+                                            used as the color column.
 
      --rotate-x-labels [ROTATION]           Rotate the x labels by -45 degree.
                                             If ROTATION is given x labels are
@@ -323,7 +334,7 @@ Optional arguments:
                                             rotated by ROTATION. ROTATION must
                                             be a number between -180 and 180.
 
-     --colors COLORS                        Specidies the color of each datagroup.
+     --colors COLORS                        Specifies the color of each datagroup.
                                             COLORS is a string of colors. All
                                             colors are seperated with a whitespace.
                                             Following color types are supported:
@@ -332,7 +343,19 @@ Optional arguments:
                                               - rgb(r, g, b)
                                               - rgba(r, g, b, a)
                                             The different types can also be 
-                                            combined in onestring.
+                                            combined in onestring. If scatter plot 
+                                            is uesed. The colors correspond to the
+                                            unique classes in the color column.
+
+     --aria-datagroup DIMENSION             Specifies if the data should be grouped
+                                            by DIMENSION. DINMENSION can be either
+                                            rows or columns. It defaults to rows.
+                                            If scatter or parallel coordinates 
+                                            plot is used this command
+                                            can be used to specifie by which column
+                                            the data should be grouped. Here 
+                                            DIMENSION can be either the index of
+                                            the column or the name.
 
      --version                              Prints version information
                                             and exits.
