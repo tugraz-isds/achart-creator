@@ -21,7 +21,7 @@ export class BarChartGrouped extends Chart
     this.init(data, metadata, doc);
 
     // Chart root
-    this.root.attr("aria-charttype", "bargrouped")
+    this.root.attr("aria-charttype", "bar-grouped")
         .attr("aria-roledescription", Text.CHART_TYPE.bargroup);
     
     let xScale = d3.scaleBand().range ([0, this.CHART_WIDTH]).padding(0.4),

@@ -64,7 +64,7 @@ acreate [--chart] CHART-TYPE [--dataset CSV-FILENAME]
         [--no-segment-values] [--no-segment-percentages]
         [--segment-percentage-precision PLACES] [--svg-precision PLACES]
         [--version] [--help] [--columns] [--rotate-x-labels [ROTATION]]
-        [--rotate-y-labels [ROTATION]] [--colors]
+        [--rotate-y-labels [ROTATION]] [--colours/--colors]
 
 
 Mandatory arguments:
@@ -266,12 +266,12 @@ Optional arguments:
                                             used as x1 (x-axis), the second
                                             as x2 (y-axis) the third as
                                             size (size of the scatter points)
-                                            and the fourth as color (color of
+                                            and the fourth as colour (colour of
                                             the scatter points)
                                             If parallel coordinates is used
-                                            and colors is selected the
+                                            and colours is selected the
                                             last given column index is 
-                                            used as the color column.
+                                            used as the colour column.
 
      --rotate-x-labels [ROTATION]           Rotate the x labels by -45 degree.
                                             If ROTATION is given x labels are
@@ -283,18 +283,18 @@ Optional arguments:
                                             rotated by ROTATION. ROTATION must
                                             be a number between -180 and 180.
 
-     --colors COLORS                        Specifies the color of each datagroup.
-                                            COLORS is a string of colors. All
-                                            colors are seperated with a whitespace.
-                                            Following color types are supported:
-                                              - d3 colornames (e.g. red, green, ...)
+     --colours/--color COLOURS              Specifies the colour of each datagroup.
+                                            COLOURS is a string of colours. All
+                                            colours are seperated with a whitespace.
+                                            Following colour types are supported:
+                                              - d3 colournames (e.g. red, green, ...)
                                               - HEX code (e.g. #69b3a2)
                                               - rgb(r, g, b)
                                               - rgba(r, g, b, a)
                                             The different types can also be 
                                             combined in onestring. If scatter plot 
-                                            is uesed. The colors correspond to the
-                                            unique classes in the color column.
+                                            is uesed. The colours correspond to the
+                                            unique classes in the colour column.
 
      --aria-datagroup DIMENSION             Specifies if the data should be grouped
                                             by DIMENSION. DINMENSION can be either
@@ -351,13 +351,13 @@ node build/acreate.js --chart pie --dataset data/fruit.csv --legend-title Fruits
 To create a stacked bar chart from the data of the CSV file
 data/nrw2019.csv:
 ```
-node build/acreate.js --chart bar-stacked --dataset .\data\nrw2019.csv --chart-title "Seats of Political Parties in Austria" --chart-desc "Seats of Political Parties in Austria per Federal state" --x-axis-title "Federal States" --y-axis-title "Number of  Seats in percent" --colors "#63C3D0 #CE000C #0056A2 #88B626 #E84188 #DCDCDC" --rotate-x-labels
+node build/acreate.js --chart bar-stacked --dataset .\data\nrw2019.csv --chart-title "Seats of Political Parties in Austria" --chart-desc "Seats of Political Parties in Austria per Federal state" --x-axis-title "Federal States" --y-axis-title "Number of  Seats in percent" --colours "#63C3D0 #CE000C #0056A2 #88B626 #E84188 #DCDCDC" --rotate-x-labels
 ```
 
 To create a grouped bar chart from the data of the CSV file
 data/nrw2019.csv:
 ```
-node build/acreate.js --chart bar-grouped --dataset .\data\nrw2019.csv --chart-title "Seats of Political Parties in Austria" --chart-desc "Seats of Political Parties in Austria per Federal state" --x-axis-title "Federal States" --y-axis-title "Number of  Seats in percent" --colors "#63C3D0 #CE000C #0056A2 #88B626 #E84188 #DCDCDC" --rotate-x-labels
+node build/acreate.js --chart bar-grouped --dataset .\data\nrw2019.csv --chart-title "Seats of Political Parties in Austria" --chart-desc "Seats of Political Parties in Austria per Federal state" --x-axis-title "Federal States" --y-axis-title "Number of  Seats in percent" --colours "#63C3D0 #CE000C #0056A2 #88B626 #E84188 #DCDCDC" --rotate-x-labels
 ```
 
 To create a scatter plot from the data of the CSV file
