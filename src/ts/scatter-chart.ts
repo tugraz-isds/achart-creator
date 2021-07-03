@@ -118,15 +118,29 @@ export class ScatterChart extends Chart
         .attr("transform", "translate("+ 0 +"," + this.CHART_HEIGHT + ")");
     
     // add title to x-axis:
-    xAxisGroup.append("text")
-        .attr("y", 50)
-        .attr("x", this.CHART_WIDTH/2)
-        .attr("text-anchor", "middle")
-        .attr("fill", "black")
-        .attr("font-size", "12")
-        .attr("role", "heading")
-        .attr("id", "x-title")
-        .text(metadata.x_axis_title);
+    if (metadata.x_axis_title)
+    {
+      xAxisGroup.append("text")
+          .attr("y", 50)
+          .attr("x", this.CHART_WIDTH/2)
+          .attr("text-anchor", "middle")
+          .attr("fill", "black")
+          .attr("font-size", "12")
+          .attr("role", "heading")
+          .attr("id", "x-title")
+          .text(metadata.x_axis_title);
+    }
+    else{
+      xAxisGroup.append("text")
+          .attr("y", 50)
+          .attr("x", this.CHART_WIDTH/2)
+          .attr("text-anchor", "middle")
+          .attr("fill", "black")
+          .attr("font-size", "12")
+          .attr("role", "heading")
+          .attr("id", "x-title")
+          .text(this.values_columns[x1]);
+    }
     let ticks = xAxisGroup.call(d3.axisBottom(xScale).tickFormat( (d : any) =>
         {
           return d;
@@ -173,14 +187,19 @@ export class ScatterChart extends Chart
           .attr("id", "y-title")
           .text(metadata.y_axis_title);
     }
-    else if (metadata.target)
+    else
     {
-      // Insert a dummy title for Describler and common screen readers:
       yAxisGroup.attr("aria-labelledby", "y-title");
-      
-      yAxisGroup.append("desc")
+      yAxisGroup.append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", -38)
+          .attr("x", -this.CHART_HEIGHT/2)
+          .attr("text-anchor", "middle")
+          .attr("fill", "black")
+          .attr("font-size", "12")
           .attr("role", "heading")
-          .text(Text.Y_AXIS_TITLE_REPLACEMENT);
+          .attr("id", "y-title")
+          .text(this.values_columns[x2]);
     }
     
     ticks = yAxisGroup.call(d3.axisLeft(yScale).tickFormat( (d: any) =>
