@@ -351,25 +351,25 @@ node build/acreate.js --chart pie --dataset data/fruit.csv --legend-title Fruits
 To create a stacked bar chart from the data of the CSV file
 data/nrw2019.csv:
 ```
-node build/acreate.js --chart bar-stacked --dataset .\data\nrw2019.csv --chart-title "Seats of Political Parties in Austria" --chart-desc "Seats of Political Parties in Austria per Federal state" --x-axis-title "Federal States" --y-axis-title "Number of  Seats in percent" --colours "#63C3D0 #CE000C #0056A2 #88B626 #E84188 #DCDCDC" --rotate-x-labels
+node build/acreate.js --chart bar-stacked --dataset ./data/nrw2019.csv --chart-title "Seats of Political Parties in Austria" --chart-desc "Seats of Political Parties in Austria per Federal state" --x-axis-title "Federal States" --y-axis-title "Number of  Seats in percent" --colours "#63C3D0 #CE000C #0056A2 #88B626 #E84188 #DCDCDC" --rotate-x-labels
 ```
 
 To create a grouped bar chart from the data of the CSV file
 data/nrw2019.csv:
 ```
-node build/acreate.js --chart bar-grouped --dataset .\data\nrw2019.csv --chart-title "Seats of Political Parties in Austria" --chart-desc "Seats of Political Parties in Austria per Federal state" --x-axis-title "Federal States" --y-axis-title "Number of  Seats in percent" --colours "#63C3D0 #CE000C #0056A2 #88B626 #E84188 #DCDCDC" --rotate-x-labels
+node build/acreate.js --chart bar-grouped --dataset ./data/nrw2019.csv --chart-title "Seats of Political Parties in Austria" --chart-desc "Seats of Political Parties in Austria per Federal state" --x-axis-title "Federal States" --y-axis-title "Number of  Seats in percent" --colours "#63C3D0 #CE000C #0056A2 #88B626 #E84188 #DCDCDC" --rotate-x-labels
 ```
 
 To create a scatter plot from the data of the CSV file
 data/iris.csv:
 ```
-node build/acreate.js --chart scatter --dataset .\data\iris.csv --chart-title "Iris Flower Dataset" --chart-desc "Sepal length and width plotted as Scatter Plot. Color is maped to species and size is maped to petal length" --x-axis-title "sepal length" --y-axis-title "sepal width" --columns "sepal_length sepal_width petal_length species" --aria-datagroup "species"
+node build/acreate.js --chart scatter --dataset ./data/iris.csv --chart-title "Iris Flower Dataset" --chart-desc "Sepal length and width plotted as Scatter Plot. Color is mapped to species and size is mapped to petal length" --x-axis-title "sepal length" --y-axis-title "sepal width" --columns "sepal_length sepal_width petal_length species" --aria-datagroup "species"
 ```
 
 To create parallel coordinates plot from the data of the CSV file
 data/iris.csv:
 ```
-node build/acreate.js --chart parallel-coordinates --dataset .\data\iris.csv --chart-title "Iris Flower Dataset" --chart-desc "Iris Flower Dataset plotted as parallel coordinates. Color is maped to species" --colors "#03FC8C #03D7FC #FCA503" --rotate-x-labels --columns "sepal_length sepal_width petal_length petal_width species" --aria-datagroup "species"
+node build/acreate.js --chart parallel-coordinates --dataset ./data/iris.csv --chart-title "Iris Flower Dataset" --chart-desc "Iris Flower Dataset plotted as parallel coordinates. Color is mapped to species" --colors "#03FC8C #03D7FC #FCA503" --rotate-x-labels --columns "sepal_length sepal_width petal_length petal_width species" --aria-datagroup "species"
 ```
 
 
