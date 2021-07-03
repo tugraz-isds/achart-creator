@@ -334,7 +334,7 @@ export class ParallelCoordinates extends Chart
         datapoints.attr("aria-labelledby", () =>
         {
           if (this.ADD_COLOR == true){
-            return `${labelled_by_text}legenditem${this.unique_classes.indexOf(data[data_index][this.values_columns_all[color_index]])+1}`;
+            return `${labelled_by_text}legenditem${(group_data_index+1)}`;
           }
           return `${labelled_by_text}`;
         });
