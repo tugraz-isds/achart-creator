@@ -16,4 +16,4 @@ The following people have contributed to AChart Creator:
 * Alexander Grass, Lea Novak, and Danica Radulovic  
   InfoVis SS 2019 G2
 
-
+* Moritz Erlacher, Lisa Habich, Alexander Perko and Markus Stradner InfoVis SS 2021 G1
