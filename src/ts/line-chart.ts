@@ -188,7 +188,11 @@ export class LineChart extends Chart
         .domain(this.values_columns)
         .range(d3.schemeSet2);
     
-    
+    let lineDataset = this.root.append("g")
+    .attr("id", "dataarea")
+    .attr("role", "dataset")
+    .attr("aria-roledescription", Text.DATASET);
+
     for (let index = 0; index < this.values_columns.length; index++)
     {
       
@@ -204,10 +208,9 @@ export class LineChart extends Chart
           .curve(d3.curveMonotoneX)   // apply smoothing to the line
       
       
-      let lineData = this.root.append("g")
-          .attr("id", "dataarea" + (index+1))
-          .attr("role", "dataset")
-          .attr("aria-roledescription", Text.DATASET);
+      let lineData = lineDataset.append("g")
+          .attr("id", "datagroup-" + (index+1))
+          .attr("role", "datagroup");
       
       if (metadata.series_titles[index])
       {
@@ -219,10 +222,10 @@ export class LineChart extends Chart
           series_title_element = "title";
         }
         
-        lineData.attr("aria-labelledby", "dataset-title" + (index+1))
+        lineData.attr("aria-labelledby", "datagroup-title-" + (index+1))
             .append(series_title_element)
                 .attr("role", "heading")
-                .attr("id", "dataset-title" + (index+1))
+                .attr("id", "datagroup-title-" + (index+1))
                 .text(metadata.series_titles[index]);
       }
       

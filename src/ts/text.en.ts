@@ -26,7 +26,7 @@ export class Text
   static readonly AXIS = `Axis`;
   static readonly LEGEND = `Legend`;
   
-  static readonly DATASET = `Data Series`;
+  static readonly DATASET = `Data Set`;
   
   
   // Strings for output to terminal
