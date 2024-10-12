@@ -4,16 +4,19 @@
 
 ## 1 Introduction
 
-
 AChart Creator (standing for Accessible Chart Creator) is a command-line 
 tool to generate accessible charts as standalone SVG files from tabular 
 data contained in CSV files. The SVG files are annotated with WAI-ARIA 
 attributes and other accessibility markup.
 
+AChart Creator works in tandem with a graphical web application called
+AChart Interpreter, which can be used to interpret and read out the
+semantically enriched, acessible SVG charts created by AChart Creator.
+It can be found at: <https://github.com/tugraz-isds/achart-interpreter>.
+
 
 
 ## 2 Features
-
 
 - Reads CSV file and creates accessible chart as SVG file.
 - Supports bar, multi-line, and pie charts.
@@ -340,4 +343,28 @@ a different folder. It can be run like this:
 TypeScript source files are located in the `src/ts/` folder.
 Corresponding JavaScript files are created in the `build/` folder.
 
+
+
+
+## 7 Further Information
+
+For a general introduction to the AChart project, see our
+paper at the Vis 2024 Workshop on Accessible Data Visualization:
+
+- Keith Andrews and Christopher Alexander Kopel;<br>
+  *Accessible SVG Charts with AChart*;<br>
+  Proc. 1st Workshop on Accessible Data Visualization,<br>
+  IEEE Vis 2024 (AccessViz 2024), Florida, USA (Virtual);<br>
+  13 Oct 2024.<br>
+  <https://accessviz.github.io/papers.html>
+
+
+For a more detailed description of the AChart project, see
+Chris Kopel's Master's Thesis:
+
+- Christopher Alexander Kopel;<br>
+  *Accessible SVG Charts with AChart Creator and AChart Interpreter*<br>
+  Master's Thesis, Graz University of Technology, Austria;<br>
+  16 May 2021.<br>
+  <https://ftp.isds.tugraz.at/pub/theses/ckopel-2021-msc.pdf>
 
